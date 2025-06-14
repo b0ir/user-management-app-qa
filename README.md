@@ -38,3 +38,19 @@ La aplicación estará disponible en `http://localhost:3000`
 npm run build
 npm run preview
 ```
+
+## Arquitectura del Proyecto
+
+```
+src/
+├── components/         # Componentes React reutilizables
+│   ├── UserForm.tsx    # Formulario de creación/edición
+│   └── UserList.tsx    # Lista de usuarios
+├── services/           # Lógica de API y servicios
+│   └── api.ts          # Simulación de API REST
+├── types/              # Definiciones de TypeScript
+│   └── User.ts         # Interfaces y tipos de usuario
+├── utils/              # Utilidades y helpers
+│   └── validation.ts   # Validaciones (RUT, email, etc.)
+└── App.tsx             # Componente principal
+```
