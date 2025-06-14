@@ -14,8 +14,8 @@ Aplicación web desarrollada en TypeScript para la gestión de usuarios.
 1. **Clonar el repositorio**
 
 ```bash
-git clone https://github.com/username/user-management-app.git
-cd user-management-app
+git clone https://github.com/username/user-management-app-qa.git
+cd user-management-app-qa
 ```
 
 2. **Instalar dependencias**
