@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User } from './types/User';
 import { UserService } from './services/api';
+import { UserList } from './components/UserList';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -45,35 +46,13 @@ export const App: React.FC = () => {
     setTimeout(() => setMessage(null), 5000);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-CL', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+  const handleEditUser = (user: User) => {
+    showMessage('error', 'Funcionalidad de edición no implementada aún');
   };
 
-  const calculateAge = (fechaNacimiento: string): number => {
-    const today = new Date();
-    const birthDate = new Date(fechaNacimiento);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-
-    return age;
+  const handleDeleteUser = (user: User) => {
+    showMessage('error', 'Funcionalidad de eliminación no implementada aún');
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -118,100 +97,13 @@ export const App: React.FC = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Lista de Usuarios</h2>
-            <p className="text-gray-600">
-              <span className="font-semibold text-blue-600">{totalUsers}</span> usuarios registrados
-              en total
-            </p>
-          </div>
-
-          {users.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-500 text-lg">No hay usuarios registrados</p>
-              <p className="text-gray-400">Agrega el primer usuario para comenzar</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {users.map((user) => {
-                const userAge = calculateAge(user.fechaNacimiento);
-
-                return (
-                  <div
-                    key={user.id}
-                    className="border rounded-lg p-4 transition-all hover:shadow-md border-gray-200"
-                  >
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <div>
-                          <span className="font-semibold text-gray-700">Nombre:</span>
-                          <span className="ml-2 text-gray-900">{user.nombre}</span>
-                        </div>
-
-                        <div>
-                          <span className="font-semibold text-gray-700">RUT:</span>
-                          <span className="ml-2 text-gray-900 font-mono">{user.rut}</span>
-                        </div>
-
-                        <div>
-                          <span className="font-semibold text-gray-700">Fecha de Nacimiento:</span>
-                          <span className="ml-2 text-gray-900">
-                            {formatDate(user.fechaNacimiento)} ({userAge} años)
-                          </span>
-                        </div>
-
-                        <div>
-                          <span className="font-semibold text-gray-700">Hijos:</span>
-                          <span className="ml-2 text-gray-900">{user.cantidadHijos}</span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div>
-                          <span className="font-semibold text-gray-700">Email:</span>
-                          <span className="ml-2 text-gray-900">{user.correoElectronico}</span>
-                        </div>
-
-                        <div>
-                          <span className="font-semibold text-gray-700">Teléfonos:</span>
-                          <div className="ml-2">
-                            {user.telefonos.map((telefono, index) => (
-                              <div key={index} className="text-gray-900 font-mono">
-                                {telefono}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <span className="font-semibold text-gray-700">Direcciones:</span>
-                          <div className="ml-2">
-                            {user.direcciones.map((direccion, index) => (
-                              <div key={index} className="text-gray-900">
-                                {direccion}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
-                      <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
-                        Editar
-                      </button>
-
-                      <button className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
-                        Eliminar
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+        <UserList
+          users={users}
+          totalUsers={totalUsers}
+          onEdit={handleEditUser}
+          onDelete={handleDeleteUser}
+          isLoading={isLoading}
+        />
       </main>
 
       {/* Footer */}
