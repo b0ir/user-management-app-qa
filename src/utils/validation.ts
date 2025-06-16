@@ -45,9 +45,9 @@ export const validateEmail = (email: string): boolean => {
 
 // Validación de número telefónico
 export const validatePhone = (phone: string): boolean => {
-  // Acepta formato internacional: +56912345678 o 56912345678
-  const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-  return phoneRegex.test(phone.replace(/\s/g, '')); // Eliminar espacios
+  // Acepta formato internacional: mínimo 7 dígitos, máximo 15
+  const phoneRegex = /^\+?[1-9]\d{6,14}$/;
+  return phoneRegex.test(phone.replace(/\s/g, ''));
 };
 
 // Verificar si hoy es el cumpleaños del usuario
