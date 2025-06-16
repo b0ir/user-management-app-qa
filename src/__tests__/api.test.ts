@@ -1,6 +1,13 @@
 import { UserService, __testUtils__ } from '../services/api';
 import { User, CreateUserDTO, UpdateUserDTO } from '../types/User';
 
+// Función helper para crear fechas
+const createDateString = (year: number, month: number, day: number): string => {
+  const mm = (month + 1).toString().padStart(2, '0');
+  const dd = day.toString().padStart(2, '0');
+  return `${year}-${mm}-${dd}`;
+};
+
 describe('UserService', () => {
   // Usuario de prueba base para usar en los tests
   const mockUser: User = {
@@ -123,23 +130,9 @@ describe('UserService', () => {
     });
 
     test('should reject deletion for user with birthday today', async () => {
+      // Crear usuario con cumpleaños hoy para probar la regla de negocio
       const today = new Date();
-
-      // Crear string de fecha manualmente SIN .toISOString()
-      const year = 1990;
-      const month = (today.getMonth() + 1).toString().padStart(2, '0');
-      const day = today.getDate().toString().padStart(2, '0');
-
-      const todayBirthday = `${year}-${month}-${day}`;
-
-      console.log('=== DEBUG MANUAL API ===');
-      console.log('Today components:', today.getDate(), today.getMonth());
-      console.log('Birthday string:', todayBirthday);
-      console.log(
-        'Parsed back:',
-        new Date(todayBirthday).getDate(),
-        new Date(todayBirthday).getMonth()
-      );
+      const todayBirthday = createDateString(1990, today.getMonth(), today.getDate());
 
       const birthdayUser: User = {
         ...mockUser,
@@ -149,8 +142,6 @@ describe('UserService', () => {
       __testUtils__.setUsers([birthdayUser]);
 
       const response = await UserService.deleteUser(birthdayUser.id);
-
-      console.log('Delete response:', response);
 
       expect(response.success).toBe(false);
       expect(response.message).toContain('cumpleaños hoy');

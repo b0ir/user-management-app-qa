@@ -1,17 +1,10 @@
 import {validateRUT, formatRUT, validateEmail, validatePhone, isBirthday, calculateAge,} from '../utils/validation';
 
-// Función helper corregida para evitar problemas de zona horaria
-const createLocalDate = (year: number, month: number, day: number): Date => {
-  return new Date(year, month, day);
-};
-
-// Función helper para string de fecha local
+// Función helper para crear fechas sin problemas de zona horaria
 const createDateString = (year: number, month: number, day: number): string => {
-  const date = createLocalDate(year, month, day);
-  const yyyy = date.getFullYear();
-  const mm = (date.getMonth() + 1).toString().padStart(2, '0');
-  const dd = date.getDate().toString().padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
+  const mm = (month + 1).toString().padStart(2, '0');
+  const dd = day.toString().padStart(2, '0');
+  return `${year}-${mm}-${dd}`;
 };
 
 describe('Validation Utils', () => {
@@ -86,39 +79,33 @@ describe('Validation Utils', () => {
   });
 
   describe('isBirthday', () => {
-  test('should detect birthday correctly', () => {
-    const today = new Date();
-    
-    // Crear string de fecha manualmente SIN .toISOString()
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const day = today.getDate().toString().padStart(2, '0');
-    
-    const todayString = `${year}-${month}-${day}`;
-    const lastYearString = `${year - 1}-${month}-${day}`;
-    
-    console.log('=== DEBUG MANUAL DATE ===');
-    console.log('Today components:', today.getDate(), today.getMonth());
-    console.log('Today string:', todayString);
-    console.log('Parsed back:', new Date(todayString).getDate(), new Date(todayString).getMonth());
-    
-    expect(isBirthday(todayString)).toBe(true);
-    expect(isBirthday(lastYearString)).toBe(true);
-  });
+    test('should detect birthday correctly', () => {
+      const today = new Date();
+      const thisYear = today.getFullYear();
+      const month = today.getMonth();
+      const day = today.getDate();
 
-  test('should reject non-birthday dates', () => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    const year = yesterday.getFullYear();
-    const month = (yesterday.getMonth() + 1).toString().padStart(2, '0');
-    const day = yesterday.getDate().toString().padStart(2, '0');
-    const yesterdayString = `${year}-${month}-${day}`;
-    
-    expect(isBirthday(yesterdayString)).toBe(false);
+      const birthdayThisYear = createDateString(thisYear, month, day);
+      const birthdayLastYear = createDateString(thisYear - 1, month, day);
+
+      expect(isBirthday(birthdayThisYear)).toBe(true);
+      expect(isBirthday(birthdayLastYear)).toBe(true);
+    });
+
+    test('should reject non-birthday dates', () => {
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      const yesterdayString = createDateString(
+        yesterday.getFullYear(),
+        yesterday.getMonth(),
+        yesterday.getDate()
+      );
+
+      expect(isBirthday(yesterdayString)).toBe(false);
+    });
   });
-});
 
   describe('calculateAge', () => {
     test('should calculate age correctly', () => {

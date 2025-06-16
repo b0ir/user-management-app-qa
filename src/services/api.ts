@@ -11,7 +11,7 @@ let users: User[] = [
     cantidadHijos: 2,
     correoElectronico: 'juan.perez@email.com',
     telefonos: ['+56912345678'],
-    direcciones: ['Av. Las Condes 1234, Santiago']
+    direcciones: ['Av. Las Condes 1234, Santiago'],
   },
   {
     id: '2',
@@ -21,170 +21,169 @@ let users: User[] = [
     cantidadHijos: 1,
     correoElectronico: 'maria.gonzalez@email.com',
     telefonos: ['+56987654321', '+56223456789'],
-    direcciones: ['Calle Principal 567, Valparaíso', 'Av. Libertad 890, Viña del Mar']
-  }
+    direcciones: ['Calle Principal 567, Valparaíso', 'Av. Libertad 890, Viña del Mar'],
+  },
 ];
 
 // Simualar un delay en la respuesta de la API
-const simulateDelay = (ms: number = 500): Promise<void> => 
-  new Promise(resolve => setTimeout(resolve, ms));
+const simulateDelay = (ms: number = 500): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export class UserService {
   static async getAllUsers(): Promise<ApiResponse<User[]>> {
     await simulateDelay();
-    
+
     try {
       return {
         success: true,
-        data: [...users]
+        data: [...users],
       };
     } catch (error) {
       return {
         success: false,
-        message: 'Error al obtener usuarios'
+        message: 'Error al obtener usuarios',
       };
     }
   }
 
   static async getUserById(id: string): Promise<ApiResponse<User>> {
     await simulateDelay();
-    
+
     try {
-      const user = users.find(u => u.id === id);
+      const user = users.find((u) => u.id === id);
       if (!user) {
         return {
           success: false,
-          message: 'Usuario no encontrado'
+          message: 'Usuario no encontrado',
         };
       }
-      
+
       return {
         success: true,
-        data: user
+        data: user,
       };
     } catch (error) {
       return {
         success: false,
-        message: 'Error al obtener usuario'
+        message: 'Error al obtener usuario',
       };
     }
   }
 
   static async createUser(userData: CreateUserDTO): Promise<ApiResponse<User>> {
     await simulateDelay();
-    
+
     try {
       // Revisamos si el RUT ya está registrado
-      const existingUser = users.find(u => u.rut === userData.rut);
+      const existingUser = users.find((u) => u.rut === userData.rut);
       if (existingUser) {
         return {
           success: false,
-          message: 'El RUT ya está registrado'
+          message: 'El RUT ya está registrado',
         };
       }
 
       const newUser: User = {
         id: (users.length + 1).toString(),
-        ...userData
+        ...userData,
       };
 
       users.push(newUser);
-      
+
       return {
         success: true,
-        data: newUser
+        data: newUser,
       };
     } catch (error) {
       return {
         success: false,
-        message: 'Error al crear usuario'
+        message: 'Error al crear usuario',
       };
     }
   }
 
   static async updateUser(id: string, userData: UpdateUserDTO): Promise<ApiResponse<User>> {
     await simulateDelay();
-    
+
     try {
-      const userIndex = users.findIndex(u => u.id === id);
+      const userIndex = users.findIndex((u) => u.id === id);
       if (userIndex === -1) {
         return {
           success: false,
-          message: 'Usuario no encontrado'
+          message: 'Usuario no encontrado',
         };
       }
 
       const updatedUser = {
         ...users[userIndex],
-        ...userData
+        ...userData,
       };
 
       users[userIndex] = updatedUser;
-      
+
       return {
         success: true,
-        data: updatedUser
+        data: updatedUser,
       };
     } catch (error) {
       return {
         success: false,
-        message: 'Error al actualizar usuario'
+        message: 'Error al actualizar usuario',
       };
     }
   }
 
   static async deleteUser(id: string): Promise<ApiResponse<void>> {
     await simulateDelay();
-    
+
     try {
-      const userIndex = users.findIndex(u => u.id === id);
+      const userIndex = users.findIndex((u) => u.id === id);
       if (userIndex === -1) {
         return {
           success: false,
-          message: 'Usuario no encontrado'
+          message: 'Usuario no encontrado',
         };
       }
 
       const user = users[userIndex];
-      
+
       // Checkeamos si el usuario está de cumpleaños hoy
       if (isBirthday(user.fechaNacimiento)) {
         return {
           success: false,
-          message: 'No se puede eliminar un usuario que está de cumpleaños hoy'
+          message: 'No se puede eliminar un usuario que está de cumpleaños hoy',
         };
       }
 
       users.splice(userIndex, 1);
-      
+
       return {
-        success: true
+        success: true,
       };
     } catch (error) {
       return {
         success: false,
-        message: 'Error al eliminar usuario'
+        message: 'Error al eliminar usuario',
       };
     }
   }
 
   static async getUsersCount(): Promise<ApiResponse<number>> {
     await simulateDelay(200);
-    
+
     try {
       return {
         success: true,
-        data: users.length
+        data: users.length,
       };
     } catch (error) {
       return {
         success: false,
-        message: 'Error al obtener conteo de usuarios'
+        message: 'Error al obtener conteo de usuarios',
       };
     }
   }
 }
-
 
 // Exportar para testing
 export const __testUtils__ = {
@@ -194,5 +193,5 @@ export const __testUtils__ = {
   setUsers: (newUsers: User[]) => {
     users = [...newUsers];
   },
-  getUsers: () => [...users]
+  getUsers: () => [...users],
 };

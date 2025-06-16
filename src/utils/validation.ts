@@ -53,11 +53,16 @@ export const validatePhone = (phone: string): boolean => {
 // Verificar si hoy es el cumpleaños del usuario
 export const isBirthday = (fechaNacimiento: string): boolean => {
   const today = new Date();
-  const birthday = new Date(fechaNacimiento);
+  const birthDateParts = fechaNacimiento.split('-'); // YYYY-MM-DD
 
-  // Comparar solo día y mes (ignorar año)
-  return today.getDate() === birthday.getDate() && today.getMonth() === birthday.getMonth();
+  if (birthDateParts.length !== 3) return false;
+
+  const birthMonth = parseInt(birthDateParts[1], 10) - 1; // Month is 0-based
+  const birthDay = parseInt(birthDateParts[2], 10);
+
+  return today.getDate() === birthDay && today.getMonth() === birthMonth;
 };
+
 
 // Calcular edad actual
 export const calculateAge = (fechaNacimiento: string): number => {
