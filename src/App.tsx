@@ -144,7 +144,10 @@ export const App: React.FC = () => {
 
             {currentView === 'list' && (
               <button
-                onClick={() => setCurrentView('create')}
+                onClick={() => {
+                  setSelectedUser(null);
+                  setCurrentView('create');
+                }}
                 disabled={isLoading}
                 className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:bg-gray-400"
               >
@@ -182,7 +185,10 @@ export const App: React.FC = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
         <div className="flex items-center space-x-2 text-gray-500">
           <button
-            onClick={() => setCurrentView('list')}
+            onClick={() => {
+              setSelectedUser(null);
+              setCurrentView('list');
+            }}
             className={`hover:text-blue-600 ${currentView === 'list' ? 'text-blue-600 font-medium' : ''}`}
           >
             Lista de Usuarios

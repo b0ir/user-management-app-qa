@@ -10,19 +10,19 @@ interface UserListProps {
   isLoading: boolean;
 }
 
-export const UserList: React.FC<UserListProps> = ({ 
-  users, 
-  totalUsers, 
-  onEdit, 
-  onDelete, 
-  isLoading 
+export const UserList: React.FC<UserListProps> = ({
+  users,
+  totalUsers,
+  onEdit,
+  onDelete,
+  isLoading,
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-CL', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -57,10 +57,10 @@ export const UserList: React.FC<UserListProps> = ({
           {users.map((user) => {
             const userAge = calculateAge(user.fechaNacimiento);
             const isUserBirthday = isBirthday(user.fechaNacimiento);
-            
+
             return (
-              <div 
-                key={user.id} 
+              <div
+                key={user.id}
                 className={`border rounded-lg p-4 transition-all hover:shadow-md ${
                   isUserBirthday ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200'
                 }`}
@@ -72,38 +72,38 @@ export const UserList: React.FC<UserListProps> = ({
                     </p>
                   </div>
                 )}
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <div>
                       <span className="font-semibold text-gray-700">Nombre:</span>
                       <span className="ml-2 text-gray-900">{user.nombre}</span>
                     </div>
-                    
+
                     <div>
                       <span className="font-semibold text-gray-700">RUT:</span>
                       <span className="ml-2 text-gray-900 font-mono">{user.rut}</span>
                     </div>
-                    
+
                     <div>
                       <span className="font-semibold text-gray-700">Fecha de Nacimiento:</span>
                       <span className="ml-2 text-gray-900">
                         {formatDate(user.fechaNacimiento)} ({userAge} años)
                       </span>
                     </div>
-                    
+
                     <div>
                       <span className="font-semibold text-gray-700">Hijos:</span>
                       <span className="ml-2 text-gray-900">{user.cantidadHijos}</span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div>
                       <span className="font-semibold text-gray-700">Email:</span>
                       <span className="ml-2 text-gray-900">{user.correoElectronico}</span>
                     </div>
-                    
+
                     <div>
                       <span className="font-semibold text-gray-700">Teléfonos:</span>
                       <div className="ml-2">
@@ -112,7 +112,7 @@ export const UserList: React.FC<UserListProps> = ({
                         ))}
                       </div>
                     </div>
-                    
+
                     <div>
                       <span className="font-semibold text-gray-700">Direcciones:</span>
                       <div className="ml-2">
@@ -123,7 +123,7 @@ export const UserList: React.FC<UserListProps> = ({
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
                   <button
                     onClick={() => onEdit(user)}
@@ -132,7 +132,7 @@ export const UserList: React.FC<UserListProps> = ({
                   >
                     Editar
                   </button>
-                  
+
                   <button
                     onClick={() => onDelete(user)}
                     disabled={!canDelete(user) || isLoading}
@@ -141,7 +141,11 @@ export const UserList: React.FC<UserListProps> = ({
                         ? 'bg-red-500 text-white hover:bg-red-600'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
-                    title={!canDelete(user) ? 'No se puede eliminar: usuario de cumpleaños' : 'Eliminar usuario'}
+                    title={
+                      !canDelete(user)
+                        ? 'No se puede eliminar: usuario de cumpleaños'
+                        : 'Eliminar usuario'
+                    }
                   >
                     {!canDelete(user) ? '🎂 No eliminar' : 'Eliminar'}
                   </button>
