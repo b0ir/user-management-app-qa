@@ -5,7 +5,7 @@ import { isBirthday } from '../utils/validation';
 let users: User[] = [
   {
     id: '1',
-    rut: '12345678-9',
+    rut: '12345678-5',
     nombre: 'Juan Pérez',
     fechaNacimiento: '1990-05-15',
     cantidadHijos: 2,

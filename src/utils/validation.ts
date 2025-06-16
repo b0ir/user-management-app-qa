@@ -57,12 +57,11 @@ export const isBirthday = (fechaNacimiento: string): boolean => {
 
   if (birthDateParts.length !== 3) return false;
 
-  const birthMonth = parseInt(birthDateParts[1], 10) - 1; // Month is 0-based
+  const birthMonth = parseInt(birthDateParts[1], 10) - 1; // Mes es 0-indexado
   const birthDay = parseInt(birthDateParts[2], 10);
 
   return today.getDate() === birthDay && today.getMonth() === birthMonth;
 };
-
 
 // Calcular edad actual
 export const calculateAge = (fechaNacimiento: string): number => {

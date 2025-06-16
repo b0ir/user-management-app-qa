@@ -61,6 +61,7 @@ export const UserList: React.FC<UserListProps> = ({
             return (
               <div
                 key={user.id}
+                data-testid="user-card"
                 className={`border rounded-lg p-4 transition-all hover:shadow-md ${
                   isUserBirthday ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200'
                 }`}
