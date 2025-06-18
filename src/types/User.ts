@@ -7,6 +7,8 @@ export interface User {
   correoElectronico: string;
   telefonos: string[];
   direcciones: string[];
+  fechaCreacion: string;
+  fechaActualizacion?: string;
 }
 
 export interface CreateUserDTO {

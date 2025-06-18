@@ -13,6 +13,7 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<User | null>(null);
 
   useEffect(() => {
     loadUsers();
@@ -61,10 +62,33 @@ export const App: React.FC = () => {
         await loadUsersCount();
         setCurrentView('list');
       } else {
-        showMessage('error', response.message || 'Error al crear usuario');
+        // Manejo específico para errores de RUT duplicado
+        if (
+          response.message?.toLowerCase().includes('rut') &&
+          (response.message?.toLowerCase().includes('existe') ||
+            response.message?.toLowerCase().includes('duplicado') ||
+            response.message?.toLowerCase().includes('registrado'))
+        ) {
+          showMessage('error', 'El RUT ya está registrado');
+        } else {
+          showMessage('error', response.message || 'Error al crear usuario');
+        }
       }
     } catch (error) {
-      showMessage('error', 'Error inesperado al crear usuario');
+      // También manejar errores de red/servidor que pueden contener info de RUT duplicado
+      const errorMessage =
+        error instanceof Error ? error.message : 'Error inesperado al crear usuario';
+
+      if (
+        errorMessage.toLowerCase().includes('rut') &&
+        (errorMessage.toLowerCase().includes('existe') ||
+          errorMessage.toLowerCase().includes('duplicado') ||
+          errorMessage.toLowerCase().includes('registrado'))
+      ) {
+        showMessage('error', 'El RUT ya está registrado');
+      } else {
+        showMessage('error', 'Error inesperado al crear usuario');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -96,14 +120,18 @@ export const App: React.FC = () => {
     setCurrentView('edit');
   };
 
-  const handleDeleteUser = async (user: User) => {
-    if (!window.confirm(`¿Estás seguro de que deseas eliminar a ${user.nombre}?`)) {
-      return;
-    }
+  // Función para manejar la eliminación de usuario
+  const handleDeleteUser = (user: User) => {
+    setShowDeleteConfirm(user);
+  };
+
+  // Función para confirmar eliminación
+  const confirmDelete = async () => {
+    if (!showDeleteConfirm) return;
 
     setIsLoading(true);
     try {
-      const response = await UserService.deleteUser(user.id);
+      const response = await UserService.deleteUser(showDeleteConfirm.id);
       if (response.success) {
         showMessage('success', 'Usuario eliminado exitosamente');
         await loadUsers();
@@ -115,7 +143,13 @@ export const App: React.FC = () => {
       showMessage('error', 'Error inesperado al eliminar usuario');
     } finally {
       setIsLoading(false);
+      setShowDeleteConfirm(null);
     }
+  };
+
+  // Función para cancelar eliminación
+  const cancelDelete = () => {
+    setShowDeleteConfirm(null);
   };
 
   const handleCancel = () => {
@@ -225,6 +259,34 @@ export const App: React.FC = () => {
           />
         )}
       </main>
+
+      {/* Modal de Confirmación de Eliminación */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Confirmar Eliminación</h3>
+            <p className="text-gray-600 mb-6">
+              ¿Está seguro que desea eliminar a <strong>{showDeleteConfirm.nombre}</strong>?
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
+                disabled={isLoading}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                disabled={isLoading}
+              >
+                {isLoading ? 'Eliminando...' : 'Confirmar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-white border-t mt-12">

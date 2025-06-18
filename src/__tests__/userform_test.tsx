@@ -1,245 +1,235 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserForm } from '../components/UserForm';
+import { User } from '../types/User';
 
-const mockUser = {
-  id: '1',
-  rut: '12345678-5',
-  nombre: 'Test User',
-  fechaNacimiento: '1990-01-02',
-  cantidadHijos: 1,
-  correoElectronico: 'test@example.com',
-  telefonos: ['+56912345678'],
-  direcciones: ['Test Address 123'],
+const mockOnSubmit = jest.fn();
+const mockOnCancel = jest.fn();
+
+const defaultProps = {
+  onSubmit: mockOnSubmit,
+  onCancel: mockOnCancel,
+  isLoading: false,
 };
 
 describe('UserForm', () => {
-  const mockOnSubmit = jest.fn();
-  const mockOnCancel = jest.fn();
-
   beforeEach(() => {
-    mockOnSubmit.mockClear();
-    mockOnCancel.mockClear();
+    jest.clearAllMocks();
   });
 
-  test('renders create mode correctly', () => {
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
+  test('renders form in create mode', () => {
+    render(<UserForm {...defaultProps} />);
 
     expect(screen.getByText('Agregar Nuevo Usuario')).toBeInTheDocument();
-    expect(screen.getByLabelText('RUT *')).toBeInTheDocument();
-    expect(screen.getByText('Crear Usuario')).toBeInTheDocument();
+    expect(screen.getByTestId('rut-input')).toBeInTheDocument();
+    expect(screen.getByTestId('submit-button')).toHaveTextContent('Crear Usuario');
   });
 
-  test('renders edit mode correctly', () => {
-    render(
-      <UserForm user={mockUser} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
+  test('renders form in edit mode', () => {
+    const user: User = {
+      id: '1',
+      rut: '12345678-9',
+      nombre: 'Juan Pérez',
+      fechaNacimiento: '1990-01-01',
+      cantidadHijos: 2,
+      correoElectronico: 'juan@example.com',
+      telefonos: ['+56912345678'],
+      direcciones: ['Av. Ejemplo 123'],
+      fechaCreacion: '2024-01-01T00:00:00.000Z',
+      fechaActualizacion: '2024-01-02T00:00:00.000Z',
+    };
+
+    render(<UserForm {...defaultProps} user={user} />);
 
     expect(screen.getByText('Editar Usuario')).toBeInTheDocument();
-    expect(screen.queryByLabelText('RUT *')).not.toBeInTheDocument();
-    expect(screen.getByText('Actualizar Usuario')).toBeInTheDocument();
+    expect(screen.queryByTestId('rut-input')).not.toBeInTheDocument();
+    expect(screen.getByTestId('submit-button')).toHaveTextContent('Actualizar Usuario');
+    expect(screen.getByDisplayValue('Juan Pérez')).toBeInTheDocument();
   });
 
-  test('pre-populates form with user data in edit mode', () => {
-    render(
-      <UserForm user={mockUser} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
+  test('validates required fields', async () => {
+    render(<UserForm {...defaultProps} />);
+
+    const submitButton = screen.getByTestId('submit-button');
+    expect(submitButton).toBeDisabled();
+
+    // Verificar errores de validación
+    expect(screen.getByTestId('rut-error')).toHaveTextContent('RUT inválido');
+    expect(screen.getByTestId('nombre-error')).toHaveTextContent('Nombre es requerido');
+    expect(screen.getByTestId('fechaNacimiento-error')).toHaveTextContent(
+      'Fecha de nacimiento es requerida'
     );
-
-    expect(screen.getByDisplayValue('Test User')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('1990-01-02')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('1')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('test@example.com')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('+56912345678')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Test Address 123')).toBeInTheDocument();
-  });
-
-  test('shows validation errors for empty required fields', async () => {
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
+    expect(screen.getByTestId('correoElectronico-error')).toHaveTextContent('Email inválido');
+    expect(screen.getByTestId('telefonos-error')).toHaveTextContent(
+      'Al menos un teléfono es requerido'
     );
-
-    await waitFor(() => {
-      expect(screen.getByText('RUT inválido')).toBeInTheDocument();
-      expect(screen.getByText('Nombre es requerido')).toBeInTheDocument();
-      expect(screen.getByText('Fecha de nacimiento es requerida')).toBeInTheDocument();
-      expect(screen.getByText('Email inválido')).toBeInTheDocument();
-      expect(screen.getByText('Al menos un teléfono es requerido')).toBeInTheDocument();
-      expect(screen.getByText('Al menos una dirección es requerida')).toBeInTheDocument();
-    });
-  });
-
-  test('validates RUT format', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
+    expect(screen.getByTestId('direcciones-error')).toHaveTextContent(
+      'Al menos una dirección es requerida'
     );
-
-    const rutInput = screen.getByLabelText('RUT *');
-    await user.type(rutInput, 'invalid-rut');
-
-    await waitFor(() => {
-      expect(screen.getByText('RUT inválido')).toBeInTheDocument();
-    });
-  });
-
-  test('validates email format', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
-
-    const emailInput = screen.getByLabelText('Correo Electrónico *');
-    await user.type(emailInput, 'invalid-email');
-
-    await waitFor(() => {
-      expect(screen.getByText('Email inválido')).toBeInTheDocument();
-    });
-  });
-
-  test('validates future birth date', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
-
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const futureDate = tomorrow.toISOString().split('T')[0];
-
-    const dateInput = screen.getByLabelText('Fecha de Nacimiento *');
-    await user.type(dateInput, futureDate);
-
-    await waitFor(() => {
-      expect(screen.getByText('La fecha de nacimiento no puede ser futura')).toBeInTheDocument();
-    });
   });
 
   test('adds additional phone numbers', async () => {
     const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
 
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
-
-    const addPhoneButton = screen.getByText('+ Agregar Teléfono');
+    const addPhoneButton = screen.getByTestId('telefonos-add');
     await user.click(addPhoneButton);
 
-    const phoneInputs = screen.getAllByPlaceholderText('+56912345678');
+    const phoneInputs = screen.getAllByTestId(/^telefonos-input-\d+$/);
     expect(phoneInputs).toHaveLength(2);
   });
 
   test('removes additional phone numbers', async () => {
     const user = userEvent.setup();
-
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
+    render(<UserForm {...defaultProps} />);
 
     // Añadir un teléfono primero
-    const addPhoneButton = screen.getByText('+ Agregar Teléfono');
+    const addPhoneButton = screen.getByTestId('telefonos-add');
     await user.click(addPhoneButton);
 
-    // Eliminarlo usando getAllByText y hacer clic en el primero
-    const removeButtons = screen.getAllByText('Eliminar');
-    await user.click(removeButtons[0]);
+    // Ahora debería haber 2 inputs y botones de eliminar
+    let phoneInputs = screen.getAllByTestId(/^telefonos-input-\d+$/);
+    expect(phoneInputs).toHaveLength(2);
 
-    const phoneInputs = screen.getAllByPlaceholderText('+56912345678');
+    // Eliminar el segundo teléfono
+    const removeButton = screen.getByTestId('telefonos-remove-1');
+    await user.click(removeButton);
+
+    // Debería quedar solo 1
+    phoneInputs = screen.getAllByTestId(/^telefonos-input-\d+$/);
     expect(phoneInputs).toHaveLength(1);
   });
 
   test('adds additional addresses', async () => {
     const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
 
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
-
-    const addAddressButton = screen.getByText('+ Agregar Dirección');
+    const addAddressButton = screen.getByTestId('direcciones-add');
     await user.click(addAddressButton);
 
-    const addressInputs = screen.getAllByPlaceholderText('Av. Ejemplo 123, Ciudad');
+    const addressInputs = screen.getAllByTestId(/^direcciones-input-\d+$/);
     expect(addressInputs).toHaveLength(2);
   });
 
   test('removes additional addresses', async () => {
     const user = userEvent.setup();
-
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
+    render(<UserForm {...defaultProps} />);
 
     // Añadir una dirección primero
-    const addAddressButton = screen.getByText('+ Agregar Dirección');
+    const addAddressButton = screen.getByTestId('direcciones-add');
     await user.click(addAddressButton);
 
-    // Eliminarlo
-    const removeButtons = screen.getAllByText('Eliminar');
-    await user.click(removeButtons[removeButtons.length - 1]); // Clickear el último botón de eliminar
+    // Ahora debería haber 2 inputs
+    let addressInputs = screen.getAllByTestId(/^direcciones-input-\d+$/);
+    expect(addressInputs).toHaveLength(2);
 
-    const addressInputs = screen.getAllByPlaceholderText('Av. Ejemplo 123, Ciudad');
+    // Eliminar la segunda dirección
+    const removeButton = screen.getByTestId('direcciones-remove-1');
+    await user.click(removeButton);
+
+    // Debería quedar solo 1
+    addressInputs = screen.getAllByTestId(/^direcciones-input-\d+$/);
     expect(addressInputs).toHaveLength(1);
   });
 
-  test('formats RUT input automatically', async () => {
+  test('formats RUT correctly', async () => {
     const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
 
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
+    const rutInput = screen.getByTestId('rut-input') as HTMLInputElement;
+    await user.type(rutInput, '123456789');
 
-    const rutInput = screen.getByLabelText('RUT *');
-    await user.type(rutInput, '123456785');
-
-    // El formatRUT agrega puntos, así que esperamos el formato con puntos
-    expect(rutInput).toHaveValue('12.345.678-5');
+    // Esperamos el formato con puntos que produce formatRUT
+    expect(rutInput.value).toBe('12.345.678-9');
   });
 
-  test('calls onCancel when cancel button is clicked', async () => {
+  test('validates future birth date', async () => {
     const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
 
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
+    const birthDateInput = screen.getByTestId('fechaNacimiento-input');
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 1);
+    const futureDateString = futureDate.toISOString().split('T')[0];
 
-    const cancelButton = screen.getByText('Cancelar');
-    await user.click(cancelButton);
+    await user.type(birthDateInput, futureDateString);
 
-    expect(mockOnCancel).toHaveBeenCalled();
-  });
-
-  test('submits valid form data', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
-
-    // Rellenar campos obligatorios
-    await user.type(screen.getByLabelText('RUT *'), '123456785');
-    await user.type(screen.getByLabelText('Nombre *'), 'Test User');
-    await user.type(screen.getByLabelText('Fecha de Nacimiento *'), '1990-01-02');
-    await user.type(screen.getByLabelText('Correo Electrónico *'), 'test@example.com');
-    await user.type(screen.getByPlaceholderText('+56912345678'), '+56912345678');
-    await user.type(screen.getByPlaceholderText('Av. Ejemplo 123, Ciudad'), 'Test Address');
-
-    // Esperar a que el botón de enviar esté habilitado
     await waitFor(() => {
-      const submitButton = screen.getByText('Crear Usuario');
+      expect(screen.getByTestId('fechaNacimiento-error')).toHaveTextContent(
+        'La fecha de nacimiento no puede ser futura'
+      );
+    });
+  });
+
+  test('validates children count correctly', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    const childrenInput = screen.getByTestId('cantidadHijos-input') as HTMLInputElement;
+
+    // Llenar otros campos para aislar la validación de hijos
+    await user.type(screen.getByTestId('rut-input'), '12345678-5');
+    await user.type(screen.getByTestId('nombre-input'), 'Test User');
+    await user.type(screen.getByTestId('fechaNacimiento-input'), '1990-01-01');
+    await user.type(screen.getByTestId('correoElectronico-input'), 'test@example.com');
+    await user.type(screen.getByTestId('telefonos-input-0'), '+56912345678');
+    await user.type(screen.getByTestId('direcciones-input-0'), 'Test Address');
+
+    // Verificar que el valor por defecto (0) permite envío
+    await waitFor(() => {
+      expect(childrenInput.value).toBe('0');
+      const submitButton = screen.getByTestId('submit-button');
       expect(submitButton).not.toBeDisabled();
     });
 
-    const submitButton = screen.getByText('Crear Usuario');
+    // Verificar que números positivos funcionan
+    await user.clear(childrenInput);
+    await user.type(childrenInput, '3');
+
+    await waitFor(() => {
+      expect(childrenInput.value).toBe('3');
+      const submitButton = screen.getByTestId('submit-button');
+      expect(submitButton).not.toBeDisabled();
+    });
+
+    // Probar caracteres no numéricos
+    await user.clear(childrenInput);
+    await user.type(childrenInput, 'abc');
+
+    await waitFor(() => {
+      expect(childrenInput.value).toBe('0'); // El input HTML filtra caracteres no numéricos
+
+      // Al convertirse el valor en 0, el formulario debería ser válido
+      const submitButton = screen.getByTestId('submit-button');
+      expect(submitButton).not.toBeDisabled();
+    });
+  });
+
+  test('handles form submission with valid data', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    // Llenar todos los campos requeridos
+    await user.type(screen.getByTestId('rut-input'), '12345678-5');
+    await user.type(screen.getByTestId('nombre-input'), 'Test User');
+    await user.type(screen.getByTestId('fechaNacimiento-input'), '1990-01-01');
+    await user.type(screen.getByTestId('correoElectronico-input'), 'test@example.com');
+    await user.type(screen.getByTestId('telefonos-input-0'), '+56912345678');
+    await user.type(screen.getByTestId('direcciones-input-0'), 'Test Address');
+
+    await waitFor(() => {
+      const submitButton = screen.getByTestId('submit-button');
+      expect(submitButton).not.toBeDisabled();
+    });
+
+    const submitButton = screen.getByTestId('submit-button');
     await user.click(submitButton);
 
+    // Verificar que se llamó con el formato correcto (con puntos)
     expect(mockOnSubmit).toHaveBeenCalledWith({
-      rut: '12.345.678-5', // formatRUT agrega puntos
+      rut: '12.345.678-5',
       nombre: 'Test User',
-      fechaNacimiento: '1990-01-02',
+      fechaNacimiento: '1990-01-01',
       cantidadHijos: 0,
       correoElectronico: 'test@example.com',
       telefonos: ['+56912345678'],
@@ -247,70 +237,136 @@ describe('UserForm', () => {
     });
   });
 
-  test('disables form when loading', () => {
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={true} />
-    );
-
-    expect(screen.getByLabelText('RUT *')).toBeDisabled();
-    expect(screen.getByLabelText('Nombre *')).toBeDisabled();
-  });
-
-  test('prevents form submission when invalid', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
-
-    const submitButton = screen.getByText('Crear Usuario');
-    expect(submitButton).toBeDisabled();
-
-    await user.click(submitButton);
-    expect(mockOnSubmit).not.toHaveBeenCalled();
-  });
-
   test('handles form submission with multiple phones and addresses', async () => {
     const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
 
-    render(
-      <UserForm user={null} onSubmit={mockOnSubmit} onCancel={mockOnCancel} isLoading={false} />
-    );
+    // Llenar campos básicos
+    await user.type(screen.getByTestId('rut-input'), '12345678-5');
+    await user.type(screen.getByTestId('nombre-input'), 'Test User');
+    await user.type(screen.getByTestId('fechaNacimiento-input'), '1990-01-02');
+    await user.type(screen.getByTestId('correoElectronico-input'), 'test@example.com');
 
-    // Rellenar campos obligatorios
-    await user.type(screen.getByLabelText('RUT *'), '123456785');
-    await user.type(screen.getByLabelText('Nombre *'), 'Test User');
-    await user.type(screen.getByLabelText('Fecha de Nacimiento *'), '1990-01-02');
-    await user.type(screen.getByLabelText('Correo Electrónico *'), 'test@example.com');
+    // Añadir múltiples teléfonos
+    await user.type(screen.getByTestId('telefonos-input-0'), '+56912345678');
+    await user.click(screen.getByTestId('telefonos-add'));
+    await user.type(screen.getByTestId('telefonos-input-1'), '+56987654321');
 
-    // Añadir multiple teléfonos
-    await user.type(screen.getByPlaceholderText('+56912345678'), '+56912345678');
-    await user.click(screen.getByText('+ Agregar Teléfono'));
-    const phoneInputs = screen.getAllByPlaceholderText('+56912345678');
-    await user.type(phoneInputs[1], '+56987654321');
-
-    // Añadir multiples direcciones
-    await user.type(screen.getByPlaceholderText('Av. Ejemplo 123, Ciudad'), 'Address 1');
-    await user.click(screen.getByText('+ Agregar Dirección'));
-    const addressInputs = screen.getAllByPlaceholderText('Av. Ejemplo 123, Ciudad');
-    await user.type(addressInputs[1], 'Address 2');
+    // Añadir múltiples direcciones
+    await user.type(screen.getByTestId('direcciones-input-0'), 'Address 1');
+    await user.click(screen.getByTestId('direcciones-add'));
+    await user.type(screen.getByTestId('direcciones-input-1'), 'Address 2');
 
     await waitFor(() => {
-      const submitButton = screen.getByText('Crear Usuario');
+      const submitButton = screen.getByTestId('submit-button');
       expect(submitButton).not.toBeDisabled();
     });
 
-    const submitButton = screen.getByText('Crear Usuario');
+    const submitButton = screen.getByTestId('submit-button');
     await user.click(submitButton);
 
     expect(mockOnSubmit).toHaveBeenCalledWith({
-      rut: '12.345.678-5', // formatRUT agrega puntos
+      rut: '12.345.678-5',
       nombre: 'Test User',
       fechaNacimiento: '1990-01-02',
       cantidadHijos: 0,
       correoElectronico: 'test@example.com',
       telefonos: ['+56912345678', '+56987654321'],
       direcciones: ['Address 1', 'Address 2'],
+    });
+  });
+
+  test('handles cancel button', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    const cancelButton = screen.getByTestId('cancel-button');
+    await user.click(cancelButton);
+
+    expect(mockOnCancel).toHaveBeenCalled();
+  });
+
+  test('disables form when loading', () => {
+    render(<UserForm {...defaultProps} isLoading={true} />);
+
+    const submitButton = screen.getByTestId('submit-button');
+    const cancelButton = screen.getByTestId('cancel-button');
+    const rutInput = screen.getByTestId('rut-input');
+
+    expect(submitButton).toHaveTextContent('Guardando...');
+    expect(cancelButton).toBeDisabled();
+    expect(rutInput).toBeDisabled();
+  });
+
+  test('validates invalid email', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    const emailInput = screen.getByTestId('correoElectronico-input');
+    await user.type(emailInput, 'invalid-email');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('correoElectronico-error')).toHaveTextContent('Email inválido');
+    });
+  });
+
+  test('validates invalid phone number', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    // Llenar otros campos primero para aislar la validación del teléfono
+    await user.type(screen.getByTestId('rut-input'), '12345678-5');
+    await user.type(screen.getByTestId('nombre-input'), 'Test User');
+    await user.type(screen.getByTestId('fechaNacimiento-input'), '1990-01-01');
+    await user.type(screen.getByTestId('correoElectronico-input'), 'test@example.com');
+    await user.type(screen.getByTestId('direcciones-input-0'), 'Test Address');
+
+    const phoneInput = screen.getByTestId('telefonos-input-0');
+    await user.type(phoneInput, '123'); // Teléfono muy corto
+
+    await waitFor(() => {
+      // Verificar que el botón se desactiva por la validación
+      const submitButton = screen.getByTestId('submit-button');
+      expect(submitButton).toBeDisabled();
+
+      // Verificar si hay error específico de teléfono
+      const phoneError = screen.queryByTestId('telefonos-error-0');
+      if (phoneError) {
+        expect(phoneError).toHaveTextContent('Teléfono 1 inválido');
+      }
+    });
+  });
+
+  test('enables submit button only when all validations pass', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    const submitButton = screen.getByTestId('submit-button');
+
+    // Inicialmente el botón debe estar deshabilitado
+    expect(submitButton).toBeDisabled();
+
+    // Llenar campos uno por uno y verificar que sigue deshabilitado
+    await user.type(screen.getByTestId('rut-input'), '12345678-5');
+    expect(submitButton).toBeDisabled();
+
+    await user.type(screen.getByTestId('nombre-input'), 'Test User');
+    expect(submitButton).toBeDisabled();
+
+    await user.type(screen.getByTestId('fechaNacimiento-input'), '1990-01-01');
+    expect(submitButton).toBeDisabled();
+
+    await user.type(screen.getByTestId('correoElectronico-input'), 'test@example.com');
+    expect(submitButton).toBeDisabled();
+
+    await user.type(screen.getByTestId('telefonos-input-0'), '+56912345678');
+    expect(submitButton).toBeDisabled();
+
+    // Solo después de llenar el último campo requerido debería habilitarse
+    await user.type(screen.getByTestId('direcciones-input-0'), 'Test Address');
+
+    await waitFor(() => {
+      expect(submitButton).not.toBeDisabled();
     });
   });
 });

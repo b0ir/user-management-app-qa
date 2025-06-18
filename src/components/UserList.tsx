@@ -1,4 +1,3 @@
-import React from 'react';
 import { User } from '../types/User';
 import { calculateAge, isBirthday } from '../utils/validation';
 
@@ -10,13 +9,7 @@ interface UserListProps {
   isLoading: boolean;
 }
 
-export const UserList: React.FC<UserListProps> = ({
-  users,
-  totalUsers,
-  onEdit,
-  onDelete,
-  isLoading,
-}) => {
+export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: UserListProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-CL', {
@@ -43,7 +36,8 @@ export const UserList: React.FC<UserListProps> = ({
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Lista de Usuarios</h2>
         <p className="text-gray-600">
-          <span className="font-semibold text-blue-600">{totalUsers}</span> usuarios registrados en total
+          <span className="font-semibold text-blue-600">{totalUsers}</span> usuarios registrados en
+          total
         </p>
       </div>
 
@@ -109,7 +103,9 @@ export const UserList: React.FC<UserListProps> = ({
                       <span className="font-semibold text-gray-700">Teléfonos:</span>
                       <div className="ml-2">
                         {user.telefonos.map((telefono, index) => (
-                          <div key={index} className="text-gray-900 font-mono">{telefono}</div>
+                          <div key={index} className="text-gray-900 font-mono">
+                            {telefono}
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -118,7 +114,9 @@ export const UserList: React.FC<UserListProps> = ({
                       <span className="font-semibold text-gray-700">Direcciones:</span>
                       <div className="ml-2">
                         {user.direcciones.map((direccion, index) => (
-                          <div key={index} className="text-gray-900">{direccion}</div>
+                          <div key={index} className="text-gray-900">
+                            {direccion}
+                          </div>
                         ))}
                       </div>
                     </div>

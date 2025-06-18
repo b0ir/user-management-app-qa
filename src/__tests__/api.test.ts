@@ -12,13 +12,15 @@ describe('UserService', () => {
   // Usuario de prueba base para usar en los tests
   const mockUser: User = {
     id: '1',
-    rut: '11111111-1',
+    rut: '12345678-5',
     nombre: 'Test User',
     fechaNacimiento: '1990-01-01',
-    cantidadHijos: 2,
+    cantidadHijos: 1,
     correoElectronico: 'test@example.com',
     telefonos: ['+56912345678'],
-    direcciones: ['Test Address 123'],
+    direcciones: ['Test Address'],
+    fechaCreacion: '2024-01-01T00:00:00.000Z',
+    fechaActualizacion: '2024-01-02T00:00:00.000Z',
   };
 
   // Limpiar el estado antes de cada test para evitar interferencias
@@ -191,6 +193,8 @@ describe('UserService', () => {
         correoElectronico: 'test@example.com',
         telefonos: ['+56912345678'],
         direcciones: ['Test Address'],
+        fechaCreacion: '2024-01-01T00:00:00.000Z',
+        fechaActualizacion: '2024-01-02T00:00:00.000Z',
       };
 
       __testUtils__.setUsers([user]);
@@ -238,6 +242,8 @@ describe('UserService', () => {
         correoElectronico: 'test@example.com',
         telefonos: ['+56912345678'],
         direcciones: ['Test Address'],
+        fechaCreacion: '2024-01-01T00:00:00.000Z',
+        fechaActualizacion: '2024-01-02T00:00:00.000Z',
       };
 
       __testUtils__.setUsers([user]);
@@ -272,6 +278,8 @@ describe('UserService', () => {
         correoElectronico: 'test@example.com',
         telefonos: ['+56912345678'],
         direcciones: ['Test Address'],
+        fechaCreacion: '2024-01-01T00:00:00.000Z',
+        fechaActualizacion: '2024-01-02T00:00:00.000Z',
       };
 
       __testUtils__.setUsers([user]);
@@ -298,6 +306,8 @@ describe('UserService', () => {
           correoElectronico: 'test@example.com',
           telefonos: ['+56912345678'],
           direcciones: ['Test Address'],
+          fechaCreacion: '2024-01-01T00:00:00.000Z',
+          fechaActualizacion: '2024-01-02T00:00:00.000Z',
         },
       ]);
 
@@ -332,6 +342,8 @@ describe('UserService', () => {
         correoElectronico: `user${i + 1}@example.com`,
         telefonos: [`+5691234567${i % 10}`],
         direcciones: [`Address ${i + 1}`],
+        fechaCreacion: '2024-01-01T00:00:00.000Z',
+        fechaActualizacion: '2024-01-02T00:00:00.000Z',
       }));
 
       __testUtils__.setUsers(manyUsers);

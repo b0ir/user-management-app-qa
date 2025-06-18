@@ -1,27 +1,41 @@
 import { User, CreateUserDTO, UpdateUserDTO, ApiResponse } from '../types/User';
 import { isBirthday } from '../utils/validation';
 
+// Utilidad para generar un ID único
+const generateId = (): string => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback para ambientes que no soportan crypto.randomUUID
+  return Math.random().toString(36).substr(2, 9);
+};
+
 // Mock database
 let users: User[] = [
+  // Buscar las líneas ~6 y ~16 y agregar las fechas:
   {
     id: '1',
     rut: '12345678-5',
     nombre: 'Juan Pérez',
-    fechaNacimiento: '1990-05-15',
+    fechaNacimiento: '1990-05-14',
     cantidadHijos: 2,
     correoElectronico: 'juan.perez@email.com',
     telefonos: ['+56912345678'],
     direcciones: ['Av. Las Condes 1234, Santiago'],
+    fechaCreacion: '2024-01-01T00:00:00.000Z',
+    fechaActualizacion: '2024-01-02T00:00:00.000Z',
   },
   {
     id: '2',
     rut: '98765432-1',
     nombre: 'María González',
-    fechaNacimiento: '1985-03-22',
+    fechaNacimiento: '1985-03-21',
     cantidadHijos: 1,
     correoElectronico: 'maria.gonzalez@email.com',
     telefonos: ['+56987654321', '+56223456789'],
     direcciones: ['Calle Principal 567, Valparaíso', 'Av. Libertad 890, Viña del Mar'],
+    fechaCreacion: '2024-01-01T00:00:00.000Z',
+    fechaActualizacion: '2024-01-02T00:00:00.000Z',
   },
 ];
 
@@ -84,8 +98,10 @@ export class UserService {
       }
 
       const newUser: User = {
-        id: (users.length + 1).toString(),
         ...userData,
+        id: generateId(),
+        fechaCreacion: new Date().toISOString(),
+        fechaActualizacion: new Date().toISOString(),
       };
 
       users.push(newUser);
