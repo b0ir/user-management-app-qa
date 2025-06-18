@@ -138,3 +138,21 @@ describe('Validation Utils', () => {
     });
   });
 });
+
+describe('Edge cases', () => {
+  test('should handle RUT with length less than 8', () => {
+    expect(validateRUT('1234567')).toBe(false);
+  });
+
+  test('should handle RUT with length greater than 9', () => {
+    expect(validateRUT('1234567890')).toBe(false);
+  });
+
+  test('should handle empty birth date in calculateAge', () => {
+    expect(() => calculateAge('')).not.toThrow();
+  });
+
+  test('should handle invalid date format in isBirthday', () => {
+    expect(isBirthday('invalid-date')).toBe(false);
+  });
+});
