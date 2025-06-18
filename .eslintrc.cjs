@@ -1,9 +1,7 @@
 module.exports = {
   root: true,
   env: { browser: true, es2020: true, node: true },
-  extends: [
-    'eslint:recommended',
-  ],
+  extends: ['eslint:recommended'],
   ignorePatterns: ['dist', '.eslintrc.cjs', 'node_modules'],
   parserOptions: {
     ecmaVersion: 'latest',
