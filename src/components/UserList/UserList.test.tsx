@@ -1,7 +1,7 @@
 import { render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserList } from '../components/UserList';
-import { User } from '../types/User';
+import { UserList } from './UserList';
+import { User } from '../../types/User';
 
 // Helper function para buscar texto que puede estar dividido en múltiples elementos
 const getByTextContent = (text: string) => {

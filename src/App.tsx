@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, CreateUserDTO, UpdateUserDTO } from './types/User';
 import { UserService } from './services/api';
-import { UserList } from './components/UserList';
+import { UserList } from './components/UserList/UserList';
 import { UserForm } from './components/UserForm';
 
 type ViewMode = 'list' | 'create' | 'edit';

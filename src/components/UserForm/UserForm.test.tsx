@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserForm } from '../components/UserForm';
-import { User } from '../types/User';
+import { UserForm } from '.';
+import { User } from '../../types/User';
 
 const mockOnSubmit = jest.fn();
 const mockOnCancel = jest.fn();

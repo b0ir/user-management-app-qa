@@ -130,9 +130,13 @@ export class UserService {
         };
       }
 
-      const updatedUser = {
-        ...users[userIndex],
+      const currentUser = users[userIndex];
+
+      const updatedUser: User = {
+        ...currentUser,
         ...userData,
+        rut: currentUser.rut, // Protección explícita del RUT
+        fechaActualizacion: new Date().toISOString(),
       };
 
       users[userIndex] = updatedUser;

@@ -1,5 +1,5 @@
-import { UserService, __testUtils__ } from '../services/api';
-import { User, CreateUserDTO, UpdateUserDTO } from '../types/User';
+import { UserService, __testUtils__ } from '../../services/api';
+import { User, CreateUserDTO, UpdateUserDTO } from '../../types/User';
 
 // Función helper para crear fechas
 const createDateString = (year: number, month: number, day: number): string => {
@@ -101,6 +101,18 @@ describe('UserService', () => {
       expect(response.success).toBe(true);
       expect(response.data?.nombre).toBe(updateData.nombre);
       expect(response.data?.rut).toBe(mockUser.rut); // El RUT no debe cambiar
+    });
+
+    test('should not allow updating RUT field', async () => {
+      __testUtils__.setUsers([mockUser]);
+
+      const response = await UserService.updateUser(mockUser.id, {
+        ...(updateData as any),
+        rut: '99999999-9',
+      });
+
+      expect(response.success).toBe(true);
+      expect(response.data?.rut).toBe(mockUser.rut); // No debe haber cambiado
     });
 
     test('should reject update for non-existent user', async () => {

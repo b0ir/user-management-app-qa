@@ -1,5 +1,5 @@
-import { User } from '../types/User';
-import { calculateAge, isBirthday } from '../utils/validation';
+import { User } from '../../types/User';
+import { calculateAge, isBirthday } from '../../utils/validation';
 
 interface UserListProps {
   users: User[];

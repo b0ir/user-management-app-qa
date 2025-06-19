@@ -1,4 +1,4 @@
-import {validateRUT, formatRUT, validateEmail, validatePhone, isBirthday, calculateAge,} from '../utils/validation';
+import {validateRUT, formatRUT, validateEmail, validatePhone, isBirthday, calculateAge,} from '../../utils/validation';
 
 // Función helper para crear fechas sin problemas de zona horaria
 const createDateString = (year: number, month: number, day: number): string => {
