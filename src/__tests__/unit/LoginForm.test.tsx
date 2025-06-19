@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { LoginForm } from '../components/LoginForm';
+import { LoginForm } from '../../components/LoginForm';
 
 describe('LoginForm', () => {
   it('shows error message on failed login', async () => {

@@ -128,12 +128,12 @@ describe('UserService', () => {
       __testUtils__.setUsers([mockUser]);
       const response = await UserService.updateUser(mockUser.id, {
         nombre: 'Nuevo Nombre',
-        foo: 'bar', // campo extra no esperado
+        foo: 'bar', // Campo extra no esperado
       } as any);
 
       expect(response.success).toBe(true);
       expect(response.data?.nombre).toBe('Nuevo Nombre');
-      expect((response.data as any).foo).toBeUndefined(); // no debe incluir campo extra
+      expect((response.data as any).foo).toBeUndefined(); // No debe incluir campo extra
     });
 
     test('should reject update for non-existent user', async () => {
@@ -176,7 +176,7 @@ describe('UserService', () => {
     });
 
     test('should reject deletion for user with birthday today', async () => {
-      // Crear usuario con cumpleaños hoy para probar la regla de negocio
+      // Crear usuario con cumpleaños hoy para probar la regla de eliminación
       const today = new Date();
       const todayBirthday = createDateString(1990, today.getMonth(), today.getDate());
 

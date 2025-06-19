@@ -7,15 +7,14 @@ const generateId = (): string => {
     return crypto.randomUUID();
   }
   // Fallback para ambientes que no soportan crypto.randomUUID
-  return Math.random().toString(36).substr(2, 9);
+  return Math.random().toString(36).substring(2, 11);
 };
 
 // Mock database
 let users: User[] = [
-  // Buscar las líneas ~6 y ~16 y agregar las fechas:
   {
     id: '1',
-    rut: '12345678-5',
+    rut: '12.345.678-5',
     nombre: 'Juan Pérez',
     fechaNacimiento: '1990-05-14',
     cantidadHijos: 2,
@@ -27,7 +26,7 @@ let users: User[] = [
   },
   {
     id: '2',
-    rut: '98765432-1',
+    rut: '15.234.567-4',
     nombre: 'María González',
     fechaNacimiento: '1985-03-21',
     cantidadHijos: 1,

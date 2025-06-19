@@ -90,6 +90,7 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel, is
           }}
           error={getFieldError('cantidadHijos')}
           disabled={isLoading}
+          min={0}
         />
 
         <EmailField
