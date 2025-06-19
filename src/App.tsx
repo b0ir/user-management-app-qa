@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { User, CreateUserDTO, UpdateUserDTO } from './types/User';
 import { UserService } from './services/api';
 import { UserList } from './components/UserList/UserList';
 import { UserForm } from './components/UserForm';
+import { AuthProvider, AuthContext } from './context/AuthContext';
+import { LoginForm } from './components/LoginForm';
 
 type ViewMode = 'list' | 'create' | 'edit';
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
+  const { user, logout, isAuthenticated } = useContext(AuthContext);
+
+  // Estado y funciones de usuarios
   const [users, setUsers] = useState<User[]>([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [currentView, setCurrentView] = useState<ViewMode>('list');
@@ -16,9 +21,11 @@ export const App: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<User | null>(null);
 
   useEffect(() => {
-    loadUsers();
-    loadUsersCount();
-  }, []);
+    if (isAuthenticated) {
+      loadUsers();
+      loadUsersCount();
+    }
+  }, [isAuthenticated]);
 
   const loadUsers = async () => {
     setIsLoading(true);
@@ -165,6 +172,10 @@ export const App: React.FC = () => {
     }
   };
 
+  if (!isAuthenticated) {
+    return <LoginForm />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
@@ -174,20 +185,30 @@ export const App: React.FC = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Gestión de Usuarios</h1>
               <p className="text-gray-600 mt-1">Sistema de administración de usuarios</p>
+              <p className="text-sm mt-1 text-gray-500">Usuario: {user}</p>
             </div>
 
-            {currentView === 'list' && (
+            <div className="flex gap-4">
               <button
-                onClick={() => {
-                  setSelectedUser(null);
-                  setCurrentView('create');
-                }}
-                disabled={isLoading}
-                className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:bg-gray-400"
+                onClick={logout}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
               >
-                <span className="px-8">+ Agregar Usuario </span>
+                Cerrar Sesión
               </button>
-            )}
+
+              {currentView === 'list' && (
+                <button
+                  onClick={() => {
+                    setSelectedUser(null);
+                    setCurrentView('create');
+                  }}
+                  disabled={isLoading}
+                  className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:bg-gray-400"
+                >
+                  <span className="px-8">+ Agregar Usuario </span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -300,3 +321,9 @@ export const App: React.FC = () => {
     </div>
   );
 };
+
+export const App: React.FC = () => (
+  <AuthProvider>
+    <AppContent />
+  </AuthProvider>
+);

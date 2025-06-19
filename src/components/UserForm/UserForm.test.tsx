@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserForm } from '.';
 import { User } from '../../types/User';
+import { ArrayField } from './components/FormFields/ArrayField';
 
 const mockOnSubmit = jest.fn();
 const mockOnCancel = jest.fn();
@@ -45,6 +46,32 @@ describe('UserForm', () => {
     expect(screen.queryByTestId('rut-input')).not.toBeInTheDocument();
     expect(screen.getByTestId('submit-button')).toHaveTextContent('Actualizar Usuario');
     expect(screen.getByDisplayValue('Juan Pérez')).toBeInTheDocument();
+  });
+
+  it('should not submit the form if it is invalid', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    const submitButton = screen.getByTestId('submit-button');
+    expect(submitButton).toBeDisabled();
+
+    // Forzar el submit de todas formas
+    await user.click(submitButton);
+
+    // Asegurarse de que onSubmit **NO fue llamado**
+    expect(mockOnSubmit).not.toHaveBeenCalled();
+  });
+
+  test('does not call onSubmit if form is invalid on submit', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    const submitButton = screen.getByTestId('submit-button');
+
+    // Forzar submit (aunque botón esté deshabilitado)
+    await user.click(submitButton);
+
+    expect(mockOnSubmit).not.toHaveBeenCalled();
   });
 
   test('validates required fields', async () => {
@@ -131,6 +158,24 @@ describe('UserForm', () => {
     addressInputs = screen.getAllByTestId(/^direcciones-input-\d+$/);
     expect(addressInputs).toHaveLength(1);
   });
+  it('shows general error for address field', () => {
+    const errors = [{ field: 'direcciones', message: 'Debe ingresar al menos una dirección' }];
+    render(
+      <ArrayField
+        label="Direcciones"
+        fieldName="direcciones"
+        values={['']}
+        onChange={() => {}}
+        onAdd={() => {}}
+        onRemove={() => {}}
+        errors={errors}
+      />
+    );
+
+    expect(screen.getByTestId('direcciones-error')).toHaveTextContent(
+      'Debe ingresar al menos una dirección'
+    );
+  });
 
   test('formats RUT correctly', async () => {
     const user = userEvent.setup();
@@ -159,6 +204,25 @@ describe('UserForm', () => {
         'La fecha de nacimiento no puede ser futura'
       );
     });
+  });
+
+  test('validates invalid addresses', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} />);
+
+    const addressInput = screen.getByTestId('direcciones-input-0');
+
+    // Borrar valor por defecto o cambiarlo a inválido
+    await user.clear(addressInput);
+    await user.type(addressInput, '123'); // menos de 5 caracteres
+
+    await waitFor(() => {
+      expect(screen.getByTestId('direcciones-error-0')).toHaveTextContent('Dirección 1 inválida');
+    });
+
+    // También verifica que el submit está deshabilitado por el error
+    const submitButton = screen.getByTestId('submit-button');
+    expect(submitButton).toBeDisabled();
   });
 
   test('validates children count correctly', async () => {
@@ -296,6 +360,18 @@ describe('UserForm', () => {
     expect(submitButton).toHaveTextContent('Guardando...');
     expect(cancelButton).toBeDisabled();
     expect(rutInput).toBeDisabled();
+  });
+
+  test('does not allow input changes when loading', async () => {
+    const user = userEvent.setup();
+    render(<UserForm {...defaultProps} isLoading={true} />);
+
+    const nombreInput = screen.getByTestId('nombre-input') as HTMLInputElement;
+    expect(nombreInput).toBeDisabled();
+
+    // Intentar cambiar valor
+    await user.type(nombreInput, 'Nuevo Nombre');
+    expect(nombreInput.value).not.toBe('Nuevo Nombre');
   });
 
   test('validates invalid email', async () => {

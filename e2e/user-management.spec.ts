@@ -1,8 +1,19 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('User Management Application', () => {
+  // Hacer login antes de cada test
   test.beforeEach(async ({ page }) => {
+    // Cargar la página principal donde está el login si no estás logeado
     await page.goto('/');
+
+    // Llenar usuario y contraseña
+    await page.getByTestId('username-input').fill('usuarioDePrueba');
+    await page.getByTestId('password-input').fill('1234'); // Contraseña fija para pruebas
+
+    // Click en login
+    await page.getByTestId('login-button').click();
+
+    // Esperar a que la página principal cargue
     await expect(page.getByRole('heading', { name: 'Gestión de Usuarios' })).toBeVisible();
   });
 
@@ -74,7 +85,7 @@ test.describe('User Management Application', () => {
 
     test('should successfully create a new user', async ({ page }) => {
       // Llenar el formulario con RUT válido según el algoritmo chileno
-      await page.getByLabel('RUT *').fill('12345678-5');
+      await page.getByLabel('RUT *').fill('11111111-1');
       await page.getByLabel('Nombre *').fill('Test User E2E');
       await page.getByLabel('Fecha de Nacimiento *').fill('1990-06-15');
       await page.getByLabel('Cantidad de Hijos').fill('1');
@@ -154,7 +165,7 @@ test.describe('User Management Application', () => {
 
     test('should reject duplicate RUT', async ({ page }) => {
       // Primero, llenar el formulario para el primer usuario
-      await page.getByLabel('RUT *').fill('12345678-5');
+      await page.getByLabel('RUT *').fill('11111111-1');
       await page.getByLabel('Nombre *').fill('First User');
       await page.getByLabel('Fecha de Nacimiento *').fill('1990-06-15');
       await page.getByLabel('Correo Electrónico *').fill('first@example.com');
@@ -173,7 +184,7 @@ test.describe('User Management Application', () => {
       // Ahora intentar crear otro usuario con el mismo RUT
       await page.getByRole('button', { name: '+ Agregar Usuario' }).click();
 
-      await page.getByLabel('RUT *').fill('12345678-5'); // Mismo RUT
+      await page.getByLabel('RUT *').fill('11111111-1'); // Mismo RUT
       await page.getByLabel('Nombre *').fill('Duplicate User');
       await page.getByLabel('Fecha de Nacimiento *').fill('1990-06-15');
       await page.getByLabel('Correo Electrónico *').fill('duplicate@example.com');

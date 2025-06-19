@@ -65,6 +65,15 @@ describe('UserService', () => {
       expect(response.data).toMatchObject(createUserData);
       expect(response.data?.id).toBeDefined(); // Verifica que se asignó un ID
     });
+    test('should generate an ID with length between 8 y 36 caracteres', async () => {
+      const response = await UserService.createUser(createUserData);
+      expect(response.success).toBe(true);
+
+      const id = response.data?.id;
+      expect(typeof id).toBe('string');
+      expect(id?.length).toBeGreaterThanOrEqual(8);
+      expect(id?.length).toBeLessThanOrEqual(36); // UUID tiene 36 caracteres
+    });
 
     test('should reject duplicate RUT', async () => {
       __testUtils__.setUsers([mockUser]);
@@ -115,11 +124,34 @@ describe('UserService', () => {
       expect(response.data?.rut).toBe(mockUser.rut); // No debe haber cambiado
     });
 
+    test('should ignore extra fields not defined in UpdateUserDTO', async () => {
+      __testUtils__.setUsers([mockUser]);
+      const response = await UserService.updateUser(mockUser.id, {
+        nombre: 'Nuevo Nombre',
+        foo: 'bar', // campo extra no esperado
+      } as any);
+
+      expect(response.success).toBe(true);
+      expect(response.data?.nombre).toBe('Nuevo Nombre');
+      expect((response.data as any).foo).toBeUndefined(); // no debe incluir campo extra
+    });
+
     test('should reject update for non-existent user', async () => {
       const response = await UserService.updateUser('999', updateData);
 
       expect(response.success).toBe(false);
       expect(response.message).toContain('Usuario no encontrado');
+    });
+
+    test('should allow partial updates', async () => {
+      __testUtils__.setUsers([mockUser]);
+      const response = await UserService.updateUser(mockUser.id, {
+        nombre: 'Solo nombre cambiado',
+      } as UpdateUserDTO);
+
+      expect(response.success).toBe(true);
+      expect(response.data?.nombre).toBe('Solo nombre cambiado');
+      expect(response.data?.correoElectronico).toBe(mockUser.correoElectronico); // Otros campos sin cambios
     });
   });
 

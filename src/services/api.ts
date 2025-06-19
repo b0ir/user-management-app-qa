@@ -88,8 +88,12 @@ export class UserService {
     await simulateDelay();
 
     try {
-      // Revisamos si el RUT ya está registrado
-      const existingUser = users.find((u) => u.rut === userData.rut);
+      // Normalizar RUT quitando puntos y guiones para comparar
+      const normalizeRut = (rut: string) => rut.replace(/[.-]/g, '').toLowerCase();
+
+      const newRutNormalized = normalizeRut(userData.rut);
+
+      const existingUser = users.find((u) => normalizeRut(u.rut) === newRutNormalized);
       if (existingUser) {
         return {
           success: false,
@@ -132,10 +136,26 @@ export class UserService {
 
       const currentUser = users[userIndex];
 
+      const allowedFields = [
+        'nombre',
+        'fechaNacimiento',
+        'cantidadHijos',
+        'correoElectronico',
+        'telefonos',
+        'direcciones',
+      ] as const;
+
+      const filteredUserData = allowedFields.reduce((acc, key) => {
+        if (key in userData) {
+          (acc as any)[key] = (userData as any)[key];
+        }
+        return acc;
+      }, {} as Partial<UpdateUserDTO>);
+
       const updatedUser: User = {
         ...currentUser,
-        ...userData,
-        rut: currentUser.rut, // Protección explícita del RUT
+        ...filteredUserData,
+        rut: currentUser.rut,
         fechaActualizacion: new Date().toISOString(),
       };
 

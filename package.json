@@ -95,7 +95,8 @@
       "!src/**/*.d.ts",
       "!src/main.tsx",
       "!src/vite-env.d.ts",
-      "!src/App.tsx"
+      "!src/App.tsx",
+      "!src/components/UserForm/index.ts"
     ],
     "coverageReporters": [
       "text",
