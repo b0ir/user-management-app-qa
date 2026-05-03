@@ -1,126 +1,126 @@
-# App de Gestión de Usuarios
+# User Management App
 
 [![Continuous Integration](https://github.com/b0ir/user-management-app-qa/actions/workflows/ci.yml/badge.svg)](https://github.com/b0ir/user-management-app-qa/actions/workflows/ci.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/b0ir/user-management-app-qa/badge)](https://www.codefactor.io/repository/github/b0ir/user-management-app-qa)
 [![codecov](https://codecov.io/gh/b0ir/user-management-app-qa/graph/badge.svg?token=TJSBXO8XA9)](https://codecov.io/gh/b0ir/user-management-app-qa)
 
-Aplicación web CRUD para gestión de usuarios con enfoque en testing completo. Desarrollada en TypeScript y React, incluye testing unitario, de integración y E2E con cobertura >90%, CI/CD automatizado y análisis de seguridad.
+A CRUD web application for user management with a focus on comprehensive testing. Built with TypeScript and React, it includes unit, integration, and E2E testing with >90% coverage, automated CI/CD, and security analysis.
 
-![Lista de Usuarios](docs/images/screenshot-lista-usuarios.png)
+![User List](docs/images/screenshot-lista-usuarios.png)
 
-## 🚀 Página de Prueba
+## 🚀 Demo
 
-**Aplicación desplegada en GitHub Pages:**
-**[Ver aplicación →](https://b0ir.github.io/user-management-app-qa/)**
+**Application deployed on GitHub Pages:**
+**[View application →](https://b0ir.github.io/user-management-app-qa/)**
 
-**Credenciales de prueba:**
+**Test credentials:**
 
-- Usuario: `cualquier valor`
-- Contraseña: `1234`
+- Username: `any value`
+- Password: `1234`
 
-## ⚡ Inicio Rápido
+## ⚡ Quick Start
 
-### Prerrequisitos
+### Prerequisites
 
-- Node.js 18.x o superior
-- npm 9.x o superior
+- Node.js 18.x or higher
+- npm 9.x or higher
 
 ```bash
-# Clonar repositorio
+# Clone repository
 git clone https://github.com/b0ir/user-management-app-qa.git
 cd user-management-app-qa
 
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Ejecutar en desarrollo
+# Run in development mode
 npm run dev
 
-# Ejecutar en producción
+# Run in production mode
 npm run build
 npm run preview
 ```
 
-La aplicación estará disponible en `http://localhost:3000` (desarrollo) o `http://localhost:4173` (producción).
+The application will be available at `http://localhost:3000` (development) or `http://localhost:4173` (production).
 
-## 🧪 Comandos de Testing
+## 🧪 Testing Commands
 
 ```bash
-# Tests unitarios y de integración
+# Unit and integration tests
 npm run test
 
-# Tests con reporte de coverage
+# Tests with coverage report
 npm run test:coverage
 
-# Tests E2E con Playwright
+# E2E tests with Playwright
 npm run test:e2e
 
 # Linting
 npm run lint
 ```
 
-## 🏗️ Funcionalidades Implementadas
+## 🏗️ Implemented Features
 
-- **CRUD completo** de usuarios con validación en tiempo real
-- **RUT único** con algoritmo de validación chileno
-- **Campos múltiples** para teléfonos y direcciones
-- **Restricción de eliminación** en cumpleaños
-- **API REST simulada** completa
-- **Autenticación simulada** con manejo de sesión
-- **CI/CD con GitHub Actions** para testing automático, deployment y análisis de seguridad con Snyk
-- **Tests E2E** con Playwright
-- **Cobertura de código** con Codecov
+- **Full CRUD** for users with real-time validation
+- **Unique RUT** with Chilean validation algorithm
+- **Multiple fields** for phones and addresses
+- **Deletion restriction** on birthdays
+- **Simulated REST API**
+- **Simulated authentication** with session management
+- **CI/CD with GitHub Actions** for automated testing, deployment, and security analysis with Snyk
+- **E2E Tests** with Playwright
+- **Code coverage** with Codecov
 
-## 📁 Arquitectura
+## 📁 Architecture
 
 ```
 src/
-├── __tests__/            # Tests organizados por tipo
-│   ├── integration/      # Tests de API y flujos completos
-│   └── unit/             # Tests unitarios (context, components, utils)
-├── components/           # Componentes React modulares
-│   ├── UserForm/         # Formulario con hooks, utils y subcomponentes
-│   ├── UserList/         # Lista con subcomponentes especializados
-│   └── LoginForm.tsx     # Autenticación
-├── context/              # React Context para sesión
-├── services/             # API REST simulada con UserService
-├── types/                # Interfaces TypeScript (User, DTOs, ApiResponse)
-├── utils/                # Validaciones (RUT, email, teléfono)
-└── App.tsx               # Routing y estado global
-e2e/                      # Tests End-to-End con Playwright
-.github/workflows/        # CI/CD y análisis de seguridad
+├── __tests__/            # Tests organized by type
+│   ├── integration/      # API and full-flow tests
+│   └── unit/             # Unit tests (context, components, utils)
+├── components/           # Modular React components
+│   ├── UserForm/         # Form with hooks, utils and subcomponents
+│   ├── UserList/         # List with specialized subcomponents
+│   └── LoginForm.tsx     # Authentication
+├── context/              # React Context for session
+├── services/             # Simulated REST API with UserService
+├── types/                # TypeScript interfaces (User, DTOs, ApiResponse)
+├── utils/                # Validations (RUT, email, phone)
+└── App.tsx               # Routing and global state
+e2e/                      # End-to-End tests with Playwright
+.github/workflows/        # CI/CD and security analysis
 ```
 
-## 🔧 Decisiones Técnicas
+## 🔧 Technical Decisions
 
 **Frontend:**
 
-- **React + TypeScript** para desarrollo type-safe con componentes reutilizables
-- **Tailwind CSS** para estilos responsive y consistentes
-- **Vite** para compilación rápida y mejor experiencia de desarrollo
+- **React + TypeScript** for type-safe development with reusable components
+- **Tailwind CSS** for responsive and consistent styling
+- **Vite** for fast builds and better developer experience
 
 **Testing:**
 
-- **Jest** para tests unitarios e integración con cobertura de código
-- **Playwright** para tests E2E cross-browser, elegido por su versatilidad y creciente adopción en la industria
-- **CI/CD testing** automatizado en cada push y pull request
+- **Jest** for unit and integration tests with code coverage
+- **Playwright** for cross-browser E2E tests, chosen for its versatility and growing industry adoption
+- **CI/CD testing** automated on every push and pull request
 
-**Validaciones:**
+**Validations:**
 
-- **Algoritmo de RUT chileno** con dígito verificador para validación local
-- **Validación de formularios** en tiempo real con feedback inmediato
-- **Formateo automático** de campos de entrada
+- **Chilean RUT algorithm** with check digit for local validation
+- **Real-time form validation** with immediate feedback
+- **Automatic formatting** of input fields
 
 **UX/UI:**
 
-- **Diseño responsive** para móviles (320px+), tablets (768px+) y desktop (1024px+)
-- **Estados visuales** para loading, error y validación
-- **Navegación accesible** por teclado y screen readers
+- **Responsive design** for mobile (320px+), tablet (768px+), and desktop (1024px+)
+- **Visual states** for loading, error, and validation
+- **Accessible navigation** via keyboard and screen readers
 
-## 📊 Cobertura de Testing
+## 📊 Test Coverage
 
-- **Tests unitarios:** Validaciones (RUT, email), hooks personalizados y utilidades
-- **Tests de integración:** API, flujos de formularios y interacciones entre componentes
-- **Tests E2E:** Casos de uso críticos (CRUD completo, autenticación, validaciones)
-- **Cobertura:** >90% en funciones y líneas críticas con reporte automatizado
-- **Testing cross-browser:** Chrome, Firefox, Safari, Mobile Chrome y Mobile Safari en tests E2E
+- **Unit tests:** Validations (RUT, email), custom hooks, and utilities
+- **Integration tests:** API, form flows, and component interactions
+- **E2E tests:** Critical use cases (full CRUD, authentication, validations)
+- **Coverage:** >90% on critical functions and lines with automated reporting
+- **Cross-browser testing:** Chrome, Firefox, Safari, Mobile Chrome, and Mobile Safari in E2E tests
