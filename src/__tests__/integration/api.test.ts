@@ -1,7 +1,7 @@
 import { UserService, __testUtils__ } from '../../services/api';
 import { User, CreateUserDTO, UpdateUserDTO } from '../../types/User';
 
-// Función helper para crear fechas
+// Helper function to create dates
 const createDateString = (year: number, month: number, day: number): string => {
   const mm = (month + 1).toString().padStart(2, '0');
   const dd = day.toString().padStart(2, '0');
@@ -9,7 +9,7 @@ const createDateString = (year: number, month: number, day: number): string => {
 };
 
 describe('UserService', () => {
-  // Usuario de prueba base para usar en los tests
+  // Base test user to use in tests
   const mockUser: User = {
     id: '1',
     rut: '12345678-5',
@@ -23,7 +23,7 @@ describe('UserService', () => {
     fechaActualizacion: '2024-01-02T00:00:00.000Z',
   };
 
-  // Limpiar el estado antes de cada test para evitar interferencias
+  // Clear state before each test to avoid interference
   beforeEach(() => {
     __testUtils__.resetUsers();
   });
@@ -47,7 +47,7 @@ describe('UserService', () => {
   });
 
   describe('createUser', () => {
-    // Datos para crear un nuevo usuario (sin ID, se genera automáticamente)
+    // Data to create a new user (without ID, auto-generated)
     const createUserData: CreateUserDTO = {
       rut: '22222222-2',
       nombre: 'New User',
@@ -63,22 +63,22 @@ describe('UserService', () => {
 
       expect(response.success).toBe(true);
       expect(response.data).toMatchObject(createUserData);
-      expect(response.data?.id).toBeDefined(); // Verifica que se asignó un ID
+      expect(response.data?.id).toBeDefined(); // Verify that an ID was assigned
     });
-    test('should generate an ID with length between 8 y 36 caracteres', async () => {
+    test('should generate an ID with length between 8 and 36 characters', async () => {
       const response = await UserService.createUser(createUserData);
       expect(response.success).toBe(true);
 
       const id = response.data?.id;
       expect(typeof id).toBe('string');
       expect(id?.length).toBeGreaterThanOrEqual(8);
-      expect(id?.length).toBeLessThanOrEqual(36); // UUID tiene 36 caracteres
+      expect(id?.length).toBeLessThanOrEqual(36); // UUID has 36 characters
     });
 
     test('should reject duplicate RUT', async () => {
       __testUtils__.setUsers([mockUser]);
 
-      // Intentar crear usuario con el mismo RUT que ya existe
+      // Attempt to create a user with the same RUT that already exists
       const duplicateUser: CreateUserDTO = {
         ...createUserData,
         rut: mockUser.rut,
@@ -92,7 +92,7 @@ describe('UserService', () => {
   });
 
   describe('updateUser', () => {
-    // Datos de actualización (sin RUT porque no se puede cambiar)
+    // Update data (without RUT because it cannot be changed)
     const updateData: UpdateUserDTO = {
       nombre: 'Updated Name',
       fechaNacimiento: '1990-01-01',
@@ -109,7 +109,7 @@ describe('UserService', () => {
 
       expect(response.success).toBe(true);
       expect(response.data?.nombre).toBe(updateData.nombre);
-      expect(response.data?.rut).toBe(mockUser.rut); // El RUT no debe cambiar
+      expect(response.data?.rut).toBe(mockUser.rut); // RUT must not change
     });
 
     test('should not allow updating RUT field', async () => {
@@ -121,19 +121,19 @@ describe('UserService', () => {
       });
 
       expect(response.success).toBe(true);
-      expect(response.data?.rut).toBe(mockUser.rut); // No debe haber cambiado
+      expect(response.data?.rut).toBe(mockUser.rut); // Must not have changed
     });
 
     test('should ignore extra fields not defined in UpdateUserDTO', async () => {
       __testUtils__.setUsers([mockUser]);
       const response = await UserService.updateUser(mockUser.id, {
         nombre: 'Nuevo Nombre',
-        foo: 'bar', // Campo extra no esperado
+        foo: 'bar', // Unexpected extra field
       } as any);
 
       expect(response.success).toBe(true);
       expect(response.data?.nombre).toBe('Nuevo Nombre');
-      expect((response.data as any).foo).toBeUndefined(); // No debe incluir campo extra
+      expect((response.data as any).foo).toBeUndefined(); // Must not include extra field
     });
 
     test('should reject update for non-existent user', async () => {
@@ -151,7 +151,7 @@ describe('UserService', () => {
 
       expect(response.success).toBe(true);
       expect(response.data?.nombre).toBe('Solo nombre cambiado');
-      expect(response.data?.correoElectronico).toBe(mockUser.correoElectronico); // Otros campos sin cambios
+      expect(response.data?.correoElectronico).toBe(mockUser.correoElectronico); // Other fields unchanged
     });
   });
 
@@ -163,7 +163,7 @@ describe('UserService', () => {
 
       expect(response.success).toBe(true);
 
-      // Verificar que el usuario fue eliminado
+      // Verify that the user was deleted
       const allUsers = await UserService.getAllUsers();
       expect(allUsers.data).toHaveLength(0);
     });
@@ -176,7 +176,7 @@ describe('UserService', () => {
     });
 
     test('should reject deletion for user with birthday today', async () => {
-      // Crear usuario con cumpleaños hoy para probar la regla de eliminación
+      // Create user with birthday today to test the deletion rule
       const today = new Date();
       const todayBirthday = createDateString(1990, today.getMonth(), today.getDate());
 
@@ -245,7 +245,7 @@ describe('UserService', () => {
 
       const originalFind = Array.prototype.find;
       Array.prototype.find = function () {
-        Array.prototype.find = originalFind; // Restaurar inmediatamente
+        Array.prototype.find = originalFind; // Restore immediately
         throw new Error('Simulated database error');
       };
 
@@ -267,7 +267,7 @@ describe('UserService', () => {
 
       const originalFind = Array.prototype.find;
       Array.prototype.find = function () {
-        Array.prototype.find = originalFind; // Restaurar inmediatamente
+        Array.prototype.find = originalFind; // Restore immediately
         throw new Error('Simulated database error');
       };
 
@@ -303,7 +303,7 @@ describe('UserService', () => {
 
       const originalFindIndex = Array.prototype.findIndex;
       Array.prototype.findIndex = function () {
-        Array.prototype.findIndex = originalFindIndex; // Restaurar inmediatamente
+        Array.prototype.findIndex = originalFindIndex; // Restore immediately
         throw new Error('Simulated database error');
       };
 
@@ -330,7 +330,7 @@ describe('UserService', () => {
 
       const originalFindIndex = Array.prototype.findIndex;
       Array.prototype.findIndex = function () {
-        Array.prototype.findIndex = originalFindIndex; // Restaurar inmediatamente
+        Array.prototype.findIndex = originalFindIndex; // Restore immediately
         throw new Error('Simulated database error');
       };
 
@@ -355,18 +355,18 @@ describe('UserService', () => {
         },
       ]);
 
-      // Usar un timeout muy corto para simular error
+      // Use a very short timeout to simulate an error
       jest.setTimeout(1);
 
       try {
         const response = await UserService.getUsersCount();
-        // Si llegamos aquí, el test pasó normalmente
+        // If we reach here, the test passed normally
         expect(response.success).toBe(true);
       } catch (error) {
-        // Si hay timeout, también es válido
+        // If there is a timeout, that is also valid
         expect(error).toBeDefined();
       } finally {
-        jest.setTimeout(5000); // Restaurar timeout normal
+        jest.setTimeout(5000); // Restore normal timeout
       }
     });
   });

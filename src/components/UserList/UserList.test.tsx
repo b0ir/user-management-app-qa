@@ -3,14 +3,14 @@ import userEvent from '@testing-library/user-event';
 import { UserList } from './UserList';
 import { User } from '../../types/User';
 
-// Helper function para buscar texto que puede estar dividido en múltiples elementos
+// Helper function to find text that may be split across multiple elements
 const getByTextContent = (text: string) => {
   return screen.getByText((_, element) => {
     return element?.textContent === text || false;
   });
 };
 
-// Helper para buscar texto dentro de un contexto específico
+// Helper to find text within a specific context
 const getByTextInContext = (text: string, context: string) => {
   return screen.getByText((_, element) => {
     return !!(
@@ -21,7 +21,7 @@ const getByTextInContext = (text: string, context: string) => {
 
 const mockUser: User = {
   id: '1',
-  rut: '12.345.678-5', // Formato con puntos como produce formatRUT
+  rut: '12.345.678-5', // Format with dots as produced by formatRUT
   nombre: 'Test User',
   fechaNacimiento: '1990-01-02',
   cantidadHijos: 1,
@@ -32,7 +32,7 @@ const mockUser: User = {
   fechaActualizacion: '2024-01-02T00:00:00.000Z',
 };
 
-// Usuario con cumpleaños hoy (para probar restricción de eliminación)
+// User with birthday today (to test deletion restriction)
 const getUserWithBirthdayToday = (): User => {
   const today = new Date();
   const birthDate = `${today.getFullYear() - 30}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -65,10 +65,10 @@ describe('UserList', () => {
       />
     );
 
-    expect(screen.getByText('Lista de Usuarios')).toBeInTheDocument();
-    expect(getByTextContent('0 usuarios registrados en total')).toBeInTheDocument();
-    expect(screen.getByText('No hay usuarios registrados')).toBeInTheDocument();
-    expect(screen.getByText('Agrega el primer usuario para comenzar')).toBeInTheDocument();
+    expect(screen.getByText('User List')).toBeInTheDocument();
+    expect(getByTextContent('0 registered users in total')).toBeInTheDocument();
+    expect(screen.getByText('No registered users')).toBeInTheDocument();
+    expect(screen.getByText('Add the first user to get started')).toBeInTheDocument();
   });
 
   test('renders loading state', () => {
@@ -82,7 +82,7 @@ describe('UserList', () => {
       />
     );
 
-    // Verificar el spinner de loading
+    // Verify the loading spinner
     expect(document.querySelector('.animate-spin')).toBeInTheDocument();
   });
 
@@ -97,16 +97,16 @@ describe('UserList', () => {
       />
     );
 
-    expect(screen.getByText('Lista de Usuarios')).toBeInTheDocument();
-    expect(getByTextContent('1 usuarios registrados en total')).toBeInTheDocument();
+    expect(screen.getByText('User List')).toBeInTheDocument();
+    expect(getByTextContent('1 registered users in total')).toBeInTheDocument();
     expect(screen.getByText('Test User')).toBeInTheDocument();
     expect(screen.getByText('12.345.678-5')).toBeInTheDocument();
     expect(screen.getByText('test@example.com')).toBeInTheDocument();
     expect(screen.getByText('+56912345678')).toBeInTheDocument();
     expect(screen.getByText('Test Address 123')).toBeInTheDocument();
 
-    // Verificar que la sección de hijos existe
-    expect(screen.getByText('Hijos:')).toBeInTheDocument();
+    // Verify the children section exists
+    expect(screen.getByText('Children:')).toBeInTheDocument();
   });
 
   test('displays children count correctly', () => {
@@ -120,8 +120,8 @@ describe('UserList', () => {
       />
     );
 
-    // Verificar que muestra la cantidad de hijos correcta
-    expect(getByTextInContext('1', 'Hijos:')).toBeInTheDocument();
+    // Verify that the correct number of children is shown
+    expect(getByTextInContext('1', 'Children:')).toBeInTheDocument();
   });
 
   test('displays user age correctly', () => {
@@ -135,11 +135,11 @@ describe('UserList', () => {
       />
     );
 
-    // Calcular edad esperada (usuario nació en 1990)
+    // Calculate expected age (user born in 1990)
     const currentYear = new Date().getFullYear();
     const expectedAge = currentYear - 1990;
 
-    expect(screen.getByText(new RegExp(`${expectedAge} años`))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`${expectedAge} years`))).toBeInTheDocument();
   });
 
   test('calls onEdit when edit button is clicked', async () => {
@@ -154,7 +154,7 @@ describe('UserList', () => {
       />
     );
 
-    const editButton = screen.getByText('Editar');
+    const editButton = screen.getByText('Edit');
     await user.click(editButton);
 
     expect(mockOnEdit).toHaveBeenCalledWith(mockUser);
@@ -173,7 +173,7 @@ describe('UserList', () => {
       />
     );
 
-    const deleteButton = screen.getByText('Eliminar');
+    const deleteButton = screen.getByText('Delete');
     await user.click(deleteButton);
 
     expect(mockOnDelete).toHaveBeenCalledWith(mockUser);
@@ -216,15 +216,15 @@ describe('UserList', () => {
       />
     );
 
-    // Verificar mensaje de cumpleaños
-    expect(screen.getByText(/¡Hoy es el cumpleaños de/)).toBeInTheDocument();
+    // Verify birthday message
+    expect(screen.getByText(/Today is .+'s birthday!/)).toBeInTheDocument();
 
-    // Verificar botón de eliminación deshabilitado
-    const deleteButton = screen.getByText('🎂 No eliminar');
+    // Verify disabled delete button
+    const deleteButton = screen.getByText('🎂 Cannot delete');
     expect(deleteButton).toBeDisabled();
-    expect(deleteButton).toHaveAttribute('title', 'No se puede eliminar: usuario de cumpleaños');
+    expect(deleteButton).toHaveAttribute('title', 'Cannot delete: user has birthday today');
 
-    // Verificar que la tarjeta tiene el estilo de cumpleaños
+    // Verify the card has birthday styling
     const userCard = screen.getByTestId('user-card');
     expect(userCard).toHaveClass('border-yellow-400', 'bg-yellow-50');
   });
@@ -240,9 +240,9 @@ describe('UserList', () => {
       />
     );
 
-    const deleteButton = screen.getByText('Eliminar');
+    const deleteButton = screen.getByText('Delete');
     expect(deleteButton).not.toBeDisabled();
-    expect(deleteButton).toHaveAttribute('title', 'Eliminar usuario');
+    expect(deleteButton).toHaveAttribute('title', 'Delete user');
     expect(deleteButton).toHaveClass('bg-red-500', 'text-white');
   });
 
@@ -257,13 +257,13 @@ describe('UserList', () => {
       />
     );
 
-    // En loading state, debería mostrar solo el spinner
+    // In loading state, should only show the spinner
     expect(document.querySelector('.animate-spin')).toBeInTheDocument();
-    // No debería mostrar las tarjetas de usuario
+    // Should not show user cards
     expect(screen.queryByTestId('user-card')).not.toBeInTheDocument();
   });
 
-  test('formats date correctly in Spanish locale', () => {
+  test('formats date correctly in English locale', () => {
     render(
       <UserList
         users={[mockUser]}
@@ -274,9 +274,9 @@ describe('UserList', () => {
       />
     );
 
-    // Verificar que la fecha se formatea correctamente (debería estar en español)
-    // Como la fecha es '1990-01-02', debería aparecer como "2 de enero de 1990" o similar
-    expect(screen.getByText(/enero/i) || screen.getByText(/1990/)).toBeInTheDocument();
+    // Verify the date is formatted correctly (should be in English)
+    // Since the date is '1990-01-02', it should appear as "January 2, 1990" or similar
+    expect(screen.getByText(/January/i) || screen.getByText(/1990/)).toBeInTheDocument();
   });
 
   test('renders multiple users correctly', () => {
@@ -298,13 +298,13 @@ describe('UserList', () => {
       />
     );
 
-    expect(getByTextContent('2 usuarios registrados en total')).toBeInTheDocument();
+    expect(getByTextContent('2 registered users in total')).toBeInTheDocument();
     expect(screen.getByText('Test User')).toBeInTheDocument();
     expect(screen.getByText('Second User')).toBeInTheDocument();
     expect(screen.getByText('test@example.com')).toBeInTheDocument();
     expect(screen.getByText('second@example.com')).toBeInTheDocument();
 
-    // Verificar que hay dos tarjetas de usuario
+    // Verify there are two user cards
     const userCards = screen.getAllByTestId('user-card');
     expect(userCards).toHaveLength(2);
   });
@@ -320,8 +320,8 @@ describe('UserList', () => {
       />
     );
 
-    const deleteButton = screen.getByText('Eliminar');
-    expect(deleteButton).toHaveAttribute('title', 'Eliminar usuario');
+    const deleteButton = screen.getByText('Delete');
+    expect(deleteButton).toHaveAttribute('title', 'Delete user');
   });
 
   test('applies correct CSS classes for birthday user card', () => {

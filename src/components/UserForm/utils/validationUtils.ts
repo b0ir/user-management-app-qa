@@ -75,7 +75,7 @@ export const validatePhonesField = (formData: any): ValidationError[] => {
       if (!validatePhone(phone)) {
         errors.push({
           field: `telefono_${index}`,
-          message: `Teléfono ${index + 1} inválido`,
+          message: `Phone ${index + 1} invalid`,
         });
       }
     });
@@ -100,7 +100,7 @@ export const validateAddressesField = (formData: any): ValidationError[] => {
       ) {
         errors.push({
           field: `direccion_${index}`,
-          message: `Dirección ${index + 1} inválida`,
+          message: `Address ${index + 1} invalid`,
         });
       }
     });

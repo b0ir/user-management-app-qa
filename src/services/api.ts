@@ -1,12 +1,12 @@
 import { User, CreateUserDTO, UpdateUserDTO, ApiResponse } from '../types/User';
 import { isBirthday } from '../utils/validation';
 
-// Utilidad para generar un ID único
+// Utility to generate a unique ID
 const generateId = (): string => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
-  // Fallback para ambientes que no soportan crypto.randomUUID
+  // Fallback for environments that don't support crypto.randomUUID
   return Math.random().toString(36).substring(2, 11);
 };
 
@@ -38,7 +38,7 @@ let users: User[] = [
   },
 ];
 
-// Simualar un delay en la respuesta de la API
+// Simulate an API response delay
 const simulateDelay = (ms: number = 500): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -54,7 +54,7 @@ export class UserService {
     } catch (error) {
       return {
         success: false,
-        message: 'Error al obtener usuarios',
+        message: 'Error fetching users',
       };
     }
   }
@@ -87,7 +87,7 @@ export class UserService {
     await simulateDelay();
 
     try {
-      // Normalizar RUT quitando puntos y guiones para comparar
+      // Normalize RUT by removing dots and dashes for comparison
       const normalizeRut = (rut: string) => rut.replace(/[.-]/g, '').toLowerCase();
 
       const newRutNormalized = normalizeRut(userData.rut);
@@ -186,7 +186,7 @@ export class UserService {
 
       const user = users[userIndex];
 
-      // Checkeamos si el usuario está de cumpleaños hoy
+      // Check if the user has a birthday today
       if (isBirthday(user.fechaNacimiento)) {
         return {
           success: false,
@@ -224,7 +224,7 @@ export class UserService {
   }
 }
 
-// Exportar para testing
+// Export for testing
 export const __testUtils__ = {
   resetUsers: () => {
     users = [];

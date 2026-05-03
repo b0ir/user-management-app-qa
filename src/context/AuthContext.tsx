@@ -24,7 +24,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const login = async (username: string, password: string) => {
     if (password === '1234') {
-      // contraseña fija para simular login
+      // fixed password to simulate login
       setUser(username);
       localStorage.setItem('user', username);
       return true;

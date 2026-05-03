@@ -61,18 +61,18 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel, is
 
         <InputField
           id="nombre"
-          label="Nombre"
+          label="Name"
           value={formData.nombre}
           onChange={(value) => handleInputChange('nombre', value)}
           error={getFieldError('nombre')}
           disabled={isLoading}
           required
-          placeholder="Ingrese el nombre completo"
+          placeholder="Enter full name"
         />
 
         <DateField
           id="fechaNacimiento"
-          label="Fecha de Nacimiento"
+          label="Date of Birth"
           value={formData.fechaNacimiento}
           onChange={(value) => handleInputChange('fechaNacimiento', value)}
           error={getFieldError('fechaNacimiento')}
@@ -82,7 +82,7 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel, is
 
         <NumberField
           id="cantidadHijos"
-          label="Cantidad de Hijos"
+          label="Number of Children"
           value={formData.cantidadHijos.toString()}
           onChange={(value) => {
             const numValue = parseInt(value);
@@ -95,17 +95,17 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel, is
 
         <EmailField
           id="correoElectronico"
-          label="Correo Electrónico"
+          label="Email"
           value={formData.correoElectronico}
           onChange={(value) => handleInputChange('correoElectronico', value)}
           error={getFieldError('correoElectronico')}
           disabled={isLoading}
           required
-          placeholder="ejemplo@correo.com"
+          placeholder="example@email.com"
         />
 
         <ArrayField
-          label="Teléfonos"
+          label="Phones"
           values={formData.telefonos}
           onChange={(index, value) => handleArrayInputChange('telefonos', index, value)}
           onAdd={() => addArrayItem('telefonos')}
@@ -118,14 +118,14 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onSubmit, onCancel, is
         />
 
         <ArrayField
-          label="Direcciones"
+          label="Addresses"
           values={formData.direcciones}
           onChange={(index, value) => handleArrayInputChange('direcciones', index, value)}
           onAdd={() => addArrayItem('direcciones')}
           onRemove={(index) => removeArrayItem('direcciones', index)}
           errors={errors}
           disabled={isLoading}
-          placeholder="Av. Ejemplo 123, Ciudad"
+          placeholder="Example Ave 123, City"
           fieldName="direcciones"
         />
 

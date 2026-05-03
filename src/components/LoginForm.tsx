@@ -16,7 +16,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ login: propLogin }) => {
     e.preventDefault();
     const success = await login(username, password);
     if (!success) {
-      setError('Usuario o contraseña inválidos');
+      setError('Invalid username or password');
     } else {
       setError(null);
     }
@@ -26,9 +26,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ login: propLogin }) => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-sm w-full space-y-8">
         <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">Iniciar Sesión</h2>
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">Sign In</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Ingresa tus credenciales para acceder
+            Enter your credentials to access
           </p>
         </div>
 
@@ -36,13 +36,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ login: propLogin }) => {
           <div className="rounded-md shadow-sm space-y-4">
             <div>
               <label htmlFor="username" className="sr-only">
-                Usuario
+                Username
               </label>
               <input
                 id="username"
                 data-testid="username-input"
                 type="text"
-                placeholder="Usuario"
+                placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
@@ -52,13 +52,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ login: propLogin }) => {
 
             <div>
               <label htmlFor="password" className="sr-only">
-                Contraseña
+                Password
               </label>
               <input
                 id="password"
                 data-testid="password-input"
                 type="password"
-                placeholder="Contraseña"
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
@@ -79,7 +79,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ login: propLogin }) => {
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
             >
-              Entrar
+              Sign In
             </button>
           </div>
         </form>

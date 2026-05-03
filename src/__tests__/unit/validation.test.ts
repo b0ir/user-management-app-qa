@@ -1,6 +1,6 @@
 import {validateRUT, formatRUT, validateEmail, validatePhone, isBirthday, calculateAge,} from '../../utils/validation';
 
-// Función helper para crear fechas sin problemas de zona horaria
+// Helper function to create dates without timezone issues
 const createDateString = (year: number, month: number, day: number): string => {
   const mm = (month + 1).toString().padStart(2, '0');
   const dd = day.toString().padStart(2, '0');
@@ -10,29 +10,29 @@ const createDateString = (year: number, month: number, day: number): string => {
 describe('Validation Utils', () => {
   describe('validateRUT', () => {
     test('should validate correct RUTs', () => {
-      // RUTs válidos con diferentes formatos
+      // Valid RUTs in different formats
       expect(validateRUT('11111111-1')).toBe(true);
       expect(validateRUT('22222222-2')).toBe(true);
       expect(validateRUT('12345678-5')).toBe(true);
-      expect(validateRUT('111111111')).toBe(true); // Sin formato
-      expect(validateRUT('11.111.111-1')).toBe(true); // Con puntos
+      expect(validateRUT('111111111')).toBe(true); // Without format
+      expect(validateRUT('11.111.111-1')).toBe(true); // With dots
 
-      // RUT con dígito verificador '0' (para cubrir remainder === 0)
+      // RUT with check digit '0' (to cover remainder === 0)
       expect(validateRUT('10000004-0')).toBe(true);
 
-      // RUT con dígito verificador 'k' (para cubrir remainder === 1)
+      // RUT with check digit 'k' (to cover remainder === 1)
       expect(validateRUT('10000013-k')).toBe(true);
-      expect(validateRUT('10000013-K')).toBe(true); // Mayúscula también
+      expect(validateRUT('10000013-K')).toBe(true); // Uppercase also valid
     });
 
     test('should reject incorrect RUTs', () => {
-      // RUTs con dígito verificador incorrecto
+      // RUTs with incorrect check digit
       expect(validateRUT('12345678-0')).toBe(false);
       expect(validateRUT('11111111-2')).toBe(false);
 
-      // RUTs con longitud incorrecta
-      expect(validateRUT('1234567')).toBe(false); // Muy corto
-      expect(validateRUT('1234567890')).toBe(false); // Muy largo
+      // RUTs with incorrect length
+      expect(validateRUT('1234567')).toBe(false); // Too short
+      expect(validateRUT('1234567890')).toBe(false); // Too long
       expect(validateRUT('123')).toBe(false);
       expect(validateRUT('')).toBe(false);
     });
@@ -46,7 +46,7 @@ describe('Validation Utils', () => {
 
     test('should handle already formatted or short RUT', () => {
       expect(formatRUT('11.111.111-1')).toBe('11.111.111-1');
-      expect(formatRUT('1234567')).toBe('1234567'); // Muy corto para formatear
+      expect(formatRUT('1234567')).toBe('1234567'); // Too short to format
     });
   });
 
@@ -70,12 +70,12 @@ describe('Validation Utils', () => {
       expect(validatePhone('+56912345678')).toBe(true);
       expect(validatePhone('56912345678')).toBe(true);
       expect(validatePhone('+1234567890')).toBe(true);
-      expect(validatePhone('+56 9 1234 5678')).toBe(true); // Con espacios
+      expect(validatePhone('+56 9 1234 5678')).toBe(true); // With spaces
     });
 
     test('should reject incorrect phone numbers', () => {
-      expect(validatePhone('123456')).toBe(false); // Muy corto
-      expect(validatePhone('+0123456789')).toBe(false); // Empieza con 0
+      expect(validatePhone('123456')).toBe(false); // Too short
+      expect(validatePhone('+0123456789')).toBe(false); // Starts with 0
       expect(validatePhone('')).toBe(false);
       expect(validatePhone('abc123')).toBe(false);
     });
@@ -107,7 +107,7 @@ describe('Validation Utils', () => {
       );
 
       expect(isBirthday(yesterdayString)).toBe(false);
-      expect(isBirthday('invalid-date')).toBe(false); // Formato inválido
+      expect(isBirthday('invalid-date')).toBe(false); // Invalid format
     });
   });
 
@@ -124,7 +124,7 @@ describe('Validation Utils', () => {
       const today = new Date();
       const birthYear = today.getFullYear() - 25;
 
-      // Crear cumpleaños en el futuro (próximo mes)
+      // Create birthday in the future (next month)
       let futureMonth = today.getMonth() + 1;
       if (futureMonth > 11) {
         futureMonth = 0;
@@ -132,7 +132,7 @@ describe('Validation Utils', () => {
 
       const birthday = createDateString(birthYear, futureMonth, today.getDate());
 
-      // Si el cumpleaños no ha ocurrido este año, la edad debería ser 24
+      // If the birthday hasn't occurred this year, age should be 24
       if (futureMonth > today.getMonth()) {
         expect(calculateAge(birthday)).toBe(24);
       } else {

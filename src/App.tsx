@@ -11,7 +11,7 @@ type ViewMode = 'list' | 'create' | 'edit';
 const AppContent: React.FC = () => {
   const { user, logout, isAuthenticated } = useContext(AuthContext);
 
-  // Estado y funciones de usuarios
+  // User state and functions
   const [users, setUsers] = useState<User[]>([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [currentView, setCurrentView] = useState<ViewMode>('list');
@@ -34,10 +34,10 @@ const AppContent: React.FC = () => {
       if (response.success && response.data) {
         setUsers(response.data);
       } else {
-        showMessage('error', response.message || 'Error al cargar usuarios');
+        showMessage('error', response.message || 'Error loading users');
       }
     } catch (error) {
-      showMessage('error', 'Error inesperado al cargar usuarios');
+      showMessage('error', 'Unexpected error loading users');
     } finally {
       setIsLoading(false);
     }
@@ -64,27 +64,27 @@ const AppContent: React.FC = () => {
     try {
       const response = await UserService.createUser(userData);
       if (response.success) {
-        showMessage('success', 'Usuario creado exitosamente');
+        showMessage('success', 'User created successfully');
         await loadUsers();
         await loadUsersCount();
         setCurrentView('list');
       } else {
-        // Manejo específico para errores de RUT duplicado
+        // Specific handling for duplicate RUT errors
         if (
           response.message?.toLowerCase().includes('rut') &&
           (response.message?.toLowerCase().includes('existe') ||
             response.message?.toLowerCase().includes('duplicado') ||
             response.message?.toLowerCase().includes('registrado'))
         ) {
-          showMessage('error', 'El RUT ya está registrado');
+          showMessage('error', 'RUT is already registered');
         } else {
-          showMessage('error', response.message || 'Error al crear usuario');
+          showMessage('error', response.message || 'Error creating user');
         }
       }
     } catch (error) {
-      // También manejar errores de red/servidor que pueden contener info de RUT duplicado
+      // Also handle network/server errors that may contain duplicate RUT info
       const errorMessage =
-        error instanceof Error ? error.message : 'Error inesperado al crear usuario';
+        error instanceof Error ? error.message : 'Unexpected error creating user';
 
       if (
         errorMessage.toLowerCase().includes('rut') &&
@@ -94,7 +94,7 @@ const AppContent: React.FC = () => {
       ) {
         showMessage('error', 'El RUT ya está registrado');
       } else {
-        showMessage('error', 'Error inesperado al crear usuario');
+        showMessage('error', 'Unexpected error creating user');
       }
     } finally {
       setIsLoading(false);
@@ -113,10 +113,10 @@ const AppContent: React.FC = () => {
         setCurrentView('list');
         setSelectedUser(null);
       } else {
-        showMessage('error', response.message || 'Error al actualizar usuario');
+        showMessage('error', response.message || 'Error updating user');
       }
     } catch (error) {
-      showMessage('error', 'Error inesperado al actualizar usuario');
+      showMessage('error', 'Unexpected error updating user');
     } finally {
       setIsLoading(false);
     }
@@ -127,12 +127,12 @@ const AppContent: React.FC = () => {
     setCurrentView('edit');
   };
 
-  // Función para manejar la eliminación de usuario
+  // Function to handle user deletion
   const handleDeleteUser = (user: User) => {
     setShowDeleteConfirm(user);
   };
 
-  // Función para confirmar eliminación
+  // Function to confirm deletion
   const confirmDelete = async () => {
     if (!showDeleteConfirm) return;
 
@@ -144,17 +144,17 @@ const AppContent: React.FC = () => {
         await loadUsers();
         await loadUsersCount();
       } else {
-        showMessage('error', response.message || 'Error al eliminar usuario');
+        showMessage('error', response.message || 'Error deleting user');
       }
     } catch (error) {
-      showMessage('error', 'Error inesperado al eliminar usuario');
+      showMessage('error', 'Unexpected error deleting user');
     } finally {
       setIsLoading(false);
       setShowDeleteConfirm(null);
     }
   };
 
-  // Función para cancelar eliminación
+  // Function to cancel deletion
   const cancelDelete = () => {
     setShowDeleteConfirm(null);
   };
@@ -183,9 +183,9 @@ const AppContent: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-6 gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Gestión de Usuarios</h1>
-              <p className="text-gray-600 mt-1">Sistema de administración de usuarios</p>
-              <p className="text-sm mt-1 text-gray-500">Usuario: {user}</p>
+              <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+              <p className="text-gray-600 mt-1">User administration system</p>
+              <p className="text-sm mt-1 text-gray-500">User: {user}</p>
             </div>
 
             <div className="flex gap-4">
@@ -193,7 +193,7 @@ const AppContent: React.FC = () => {
                 onClick={logout}
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
               >
-                Cerrar Sesión
+                Log Out
               </button>
 
               {currentView === 'list' && (
@@ -205,7 +205,7 @@ const AppContent: React.FC = () => {
                   disabled={isLoading}
                   className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:bg-gray-400"
                 >
-                  <span className="px-8">+ Agregar Usuario </span>
+                  <span className="px-8">+ Add User </span>
                 </button>
               )}
             </div>
@@ -217,11 +217,10 @@ const AppContent: React.FC = () => {
       {message && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <div
-            className={`p-4 rounded-md ${
-              message.type === 'success'
+            className={`p-4 rounded-md ${message.type === 'success'
                 ? 'bg-green-100 border border-green-400 text-green-700'
                 : 'bg-red-100 border border-red-400 text-red-700'
-            }`}
+              }`}
           >
             <div className="flex justify-between items-center">
               <span>{message.text}</span>
@@ -246,13 +245,13 @@ const AppContent: React.FC = () => {
             }}
             className={`hover:text-blue-600 ${currentView === 'list' ? 'text-blue-600 font-medium' : ''}`}
           >
-            Lista de Usuarios
+            User List
           </button>
           {currentView !== 'list' && (
             <>
               <span>/</span>
               <span className="text-blue-600 font-medium">
-                {currentView === 'create' ? 'Agregar Usuario' : 'Editar Usuario'}
+                {currentView === 'create' ? 'Add User' : 'Edit User'}
               </span>
             </>
           )}
@@ -281,13 +280,13 @@ const AppContent: React.FC = () => {
         )}
       </main>
 
-      {/* Modal de Confirmación de Eliminación */}
+      {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">Confirmar Eliminación</h3>
+            <h3 className="text-lg font-semibold mb-4">Confirm Deletion</h3>
             <p className="text-gray-600 mb-6">
-              ¿Está seguro que desea eliminar a <strong>{showDeleteConfirm.nombre}</strong>?
+              Are you sure you want to delete <strong>{showDeleteConfirm.nombre}</strong>?
             </p>
             <div className="flex gap-3 justify-end">
               <button
@@ -295,14 +294,14 @@ const AppContent: React.FC = () => {
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
                 disabled={isLoading}
               >
-                Cancelar
+                Cancel
               </button>
               <button
                 onClick={confirmDelete}
                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                 disabled={isLoading}
               >
-                {isLoading ? 'Eliminando...' : 'Confirmar'}
+                {isLoading ? 'Deleting...' : 'Confirm'}
               </button>
             </div>
           </div>
@@ -313,8 +312,8 @@ const AppContent: React.FC = () => {
       <footer className="bg-white border-t mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center text-gray-500">
-            <p>App de Gestión de Usuarios</p>
-            <p className="text-sm mt-1">Desarrollado por Benjamín Aros</p>
+            <p>User Management App</p>
+            <p className="text-sm mt-1">Developed by b0ir</p>
           </div>
         </div>
       </footer>

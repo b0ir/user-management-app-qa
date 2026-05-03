@@ -43,8 +43,8 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
   };
 
   const getButtonLabel = () => {
-    if (label === 'Teléfonos') return 'Teléfono';
-    if (label === 'Direcciones') return 'Dirección';
+    if (label === 'Phones') return 'Phone';
+    if (label === 'Addresses') return 'Address';
     return label.slice(0, -1);
   };
 
@@ -75,9 +75,9 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
               data-testid={`${fieldName}-remove-${index}`}
               className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:bg-gray-400 transition-colors"
               disabled={disabled}
-              aria-label={`Eliminar ${label.toLowerCase()} ${index + 1}`}
+              aria-label={`Remove ${label.toLowerCase()} ${index + 1}`}
             >
-              Eliminar
+              Remove
             </button>
           )}
           {getFieldError(index) && (
@@ -93,9 +93,9 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
         data-testid={`${fieldName}-add`}
         className="px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:bg-gray-400 transition-colors"
         disabled={disabled}
-        aria-label={`Agregar ${label.toLowerCase()}`}
+        aria-label={`Add ${label.toLowerCase()}`}
       >
-        + Agregar {getButtonLabel()}
+        + Add {getButtonLabel()}
       </button>
       {getGeneralError() && (
         <p className="text-red-500 text-sm mt-1" data-testid={`${fieldName}-error`}>

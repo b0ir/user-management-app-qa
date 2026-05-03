@@ -1,23 +1,23 @@
-// Validación del RUT chileno con algoritmo de dígito verificador
+// Chilean RUT validation using the check digit algorithm
 export const validateRUT = (rut: string): boolean => {
-  // Limpiar formato: eliminar puntos y guiones
+  // Clean format: remove dots and dashes
   const cleanRut = rut.replace(/[.-]/g, '');
   if (cleanRut.length < 8 || cleanRut.length > 9) return false;
 
-  // Separar dígitos del cuerpo y dígito verificador
+  // Separate body digits from the check digit
   const rutDigits = cleanRut.slice(0, -1);
   const verifierDigit = cleanRut.slice(-1).toLowerCase();
 
-  // Algoritmo de validación chileno: multiplicar por secuencia 2,3,4,5,6,7,2,3...
+  // Chilean validation algorithm: multiply by sequence 2,3,4,5,6,7,2,3...
   let sum = 0;
   let multiplier = 2;
 
   for (let i = rutDigits.length - 1; i >= 0; i--) {
     sum += parseInt(rutDigits[i]) * multiplier;
-    multiplier = multiplier === 7 ? 2 : multiplier + 1; // Resetear a 2 después de 7
+    multiplier = multiplier === 7 ? 2 : multiplier + 1; // Reset to 2 after 7
   }
 
-  // Calcular dígito verificador: 11 - (suma mod 11)
+  // Calculate check digit: 11 - (sum mod 11)
   const remainder = sum % 11;
   const calculatedVerifier =
     remainder === 0 ? '0' : remainder === 1 ? 'k' : (11 - remainder).toString();
@@ -25,52 +25,52 @@ export const validateRUT = (rut: string): boolean => {
   return calculatedVerifier === verifierDigit;
 };
 
-// Formatear RUT con puntos y guión (ej: 12.345.678-9)
+// Format RUT with dots and dash (e.g. 12.345.678-9)
 export const formatRUT = (rut: string): string => {
   const cleanRut = rut.replace(/[.-]/g, '');
-  if (cleanRut.length < 8) return rut; // Muy corto para formatear
+  if (cleanRut.length < 8) return rut; // Too short to format
 
   const rutBody = cleanRut.slice(0, -1);
   const verifierDigit = cleanRut.slice(-1);
 
-  // Agregar puntos cada 3 dígitos desde la derecha
+  // Add dots every 3 digits from the right
   return `${rutBody.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}-${verifierDigit}`;
 };
 
-// Validación básica de formato de email
+// Basic email format validation
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 };
 
-// Validación de número telefónico
+// Phone number validation
 export const validatePhone = (phone: string): boolean => {
-  // Acepta formato internacional: mínimo 7 dígitos, máximo 15
+  // Accepts international format: minimum 7 digits, maximum 15
   const phoneRegex = /^\+?[1-9]\d{6,14}$/;
   return phoneRegex.test(phone.replace(/\s/g, ''));
 };
 
-// Verificar si hoy es el cumpleaños del usuario
+// Check if today is the user's birthday
 export const isBirthday = (fechaNacimiento: string): boolean => {
   const today = new Date();
   const birthDateParts = fechaNacimiento.split('-'); // YYYY-MM-DD
 
   if (birthDateParts.length !== 3) return false;
 
-  const birthMonth = parseInt(birthDateParts[1], 10) - 1; // Mes es 0-indexado
+  const birthMonth = parseInt(birthDateParts[1], 10) - 1; // Month is 0-indexed
   const birthDay = parseInt(birthDateParts[2], 10);
 
   return today.getDate() === birthDay && today.getMonth() === birthMonth;
 };
 
-// Calcular edad actual
+// Calculate current age
 export const calculateAge = (fechaNacimiento: string): number => {
   const today = new Date();
   const birthDate = new Date(fechaNacimiento);
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
 
-  // Si aún no ha pasado el cumpleaños este año, restar 1
+  // If the birthday hasn't occurred yet this year, subtract 1
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
     age--;
   }

@@ -19,9 +19,9 @@ export const FormActions: React.FC<FormActionsProps> = ({
       disabled={!isFormValid || isLoading}
       data-testid="submit-button"
       className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
-      aria-label={`${isLoading ? 'Guardando...' : isEditMode ? 'Actualizar' : 'Crear'} Usuario`}
+      aria-label={`${isLoading ? 'Saving...' : isEditMode ? 'Update' : 'Create'} User`}
     >
-      {isLoading ? 'Guardando...' : isEditMode ? 'Actualizar' : 'Crear'} Usuario
+      {isLoading ? 'Saving...' : isEditMode ? 'Update' : 'Create'} User
     </button>
     <button
       type="button"
@@ -30,7 +30,7 @@ export const FormActions: React.FC<FormActionsProps> = ({
       data-testid="cancel-button"
       className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 disabled:bg-gray-400 transition-colors font-medium"
     >
-      Cancelar
+      Cancel
     </button>
   </div>
 );

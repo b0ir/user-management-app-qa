@@ -16,7 +16,7 @@ describe('LoginForm', () => {
     fireEvent.click(screen.getByTestId('login-button'));
 
     await waitFor(() => {
-      expect(screen.getByText(/usuario o contraseña inválidos/i)).toBeInTheDocument();
+      expect(screen.getByText(/invalid username or password/i)).toBeInTheDocument();
     });
   });
 
@@ -34,7 +34,7 @@ describe('LoginForm', () => {
     fireEvent.click(screen.getByTestId('login-button'));
 
     await waitFor(() => {
-      expect(screen.queryByText(/usuario o contraseña inválidos/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/invalid username or password/i)).not.toBeInTheDocument();
     });
   });
 
@@ -74,7 +74,7 @@ describe('LoginForm', () => {
     fireEvent.click(screen.getByTestId('login-button'));
 
     await waitFor(() => {
-      expect(screen.getByText(/usuario o contraseña inválidos/i)).toBeInTheDocument();
+      expect(screen.getByText(/invalid username or password/i)).toBeInTheDocument();
     });
 
     // Second attempt: success
@@ -84,7 +84,7 @@ describe('LoginForm', () => {
     fireEvent.click(screen.getByTestId('login-button'));
 
     await waitFor(() => {
-      expect(screen.queryByText(/usuario o contraseña inválidos/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/invalid username or password/i)).not.toBeInTheDocument();
     });
   });
 });

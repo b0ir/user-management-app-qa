@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UserForm } from '.';
+import { UserForm } from '.'
 import { User } from '../../types/User';
 import { ArrayField } from './components/FormFields/ArrayField';
 
@@ -13,7 +13,7 @@ const defaultProps = {
   isLoading: false,
 };
 
-// Helper para llenar formulario completo
+// Helper to fill the complete form
 const fillCompleteForm = async (user: any, rut = '12345678-5') => {
   await user.type(screen.getByTestId('rut-input'), rut);
   await user.type(screen.getByTestId('nombre-input'), 'Test User');
@@ -32,9 +32,9 @@ describe('UserForm', () => {
     test('renders form in create mode', () => {
       render(<UserForm {...defaultProps} />);
 
-      expect(screen.getByText('Agregar Nuevo Usuario')).toBeInTheDocument();
+      expect(screen.getByText('Add New User')).toBeInTheDocument();
       expect(screen.getByTestId('rut-input')).toBeInTheDocument();
-      expect(screen.getByTestId('submit-button')).toHaveTextContent('Crear Usuario');
+      expect(screen.getByTestId('submit-button')).toHaveTextContent('Create User');
     });
 
     test('renders form in edit mode', () => {
@@ -53,9 +53,9 @@ describe('UserForm', () => {
 
       render(<UserForm {...defaultProps} user={user} />);
 
-      expect(screen.getByText('Editar Usuario')).toBeInTheDocument();
+      expect(screen.getByText('Edit User')).toBeInTheDocument();
       expect(screen.queryByTestId('rut-input')).not.toBeInTheDocument();
-      expect(screen.getByTestId('submit-button')).toHaveTextContent('Actualizar Usuario');
+      expect(screen.getByTestId('submit-button')).toHaveTextContent('Update User');
       expect(screen.getByDisplayValue('Juan Pérez')).toBeInTheDocument();
     });
   });
@@ -68,22 +68,22 @@ describe('UserForm', () => {
       const submitButton = screen.getByTestId('submit-button');
       expect(submitButton).toBeDisabled();
 
-      // Forzar submit (aunque botón esté deshabilitado)
+      // Force submit (even though button is disabled)
       await user.click(submitButton);
       expect(mockOnSubmit).not.toHaveBeenCalled();
 
-      // Verificar errores de validación
-      expect(screen.getByTestId('rut-error')).toHaveTextContent('RUT inválido');
-      expect(screen.getByTestId('nombre-error')).toHaveTextContent('Nombre es requerido');
+      // Verify validation errors
+      expect(screen.getByTestId('rut-error')).toHaveTextContent('Invalid RUT');
+      expect(screen.getByTestId('nombre-error')).toHaveTextContent('Name is required');
       expect(screen.getByTestId('fechaNacimiento-error')).toHaveTextContent(
-        'Fecha de nacimiento es requerida'
+        'Date of birth is required'
       );
-      expect(screen.getByTestId('correoElectronico-error')).toHaveTextContent('Email inválido');
+      expect(screen.getByTestId('correoElectronico-error')).toHaveTextContent('Invalid email');
       expect(screen.getByTestId('telefonos-error')).toHaveTextContent(
-        'Al menos un teléfono es requerido'
+        'At least one phone number is required'
       );
       expect(screen.getByTestId('direcciones-error')).toHaveTextContent(
-        'Al menos una dirección es requerida'
+        'At least one address is required'
       );
     });
 
@@ -94,7 +94,7 @@ describe('UserForm', () => {
       const rutInput = screen.getByTestId('rut-input') as HTMLInputElement;
       await user.type(rutInput, '123456789');
 
-    // Esperamos el formato con puntos que produce formatRUT
+      // Expect the format with dots produced by formatRUT
       expect(rutInput.value).toBe('12.345.678-9');
     });
 
@@ -111,7 +111,7 @@ describe('UserForm', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('fechaNacimiento-error')).toHaveTextContent(
-          'La fecha de nacimiento no puede ser futura'
+          'Date of birth cannot be in the future'
         );
       });
     });
@@ -124,7 +124,7 @@ describe('UserForm', () => {
       await user.type(emailInput, 'invalid-email');
 
       await waitFor(() => {
-        expect(screen.getByTestId('correoElectronico-error')).toHaveTextContent('Email inválido');
+        expect(screen.getByTestId('correoElectronico-error')).toHaveTextContent('Invalid email');
       });
     });
 
@@ -132,7 +132,7 @@ describe('UserForm', () => {
       const user = userEvent.setup();
       render(<UserForm {...defaultProps} />);
 
-      // Llenar otros campos primero para aislar la validación del teléfono
+      // Fill other fields first to isolate phone validation
       await user.type(screen.getByTestId('rut-input'), '12345678-5');
       await user.type(screen.getByTestId('nombre-input'), 'Test User');
       await user.type(screen.getByTestId('fechaNacimiento-input'), '1990-01-01');
@@ -140,7 +140,7 @@ describe('UserForm', () => {
       await user.type(screen.getByTestId('direcciones-input-0'), 'Test Address');
 
       const phoneInput = screen.getByTestId('telefonos-input-0');
-      await user.type(phoneInput, '123'); // Teléfono muy corto
+      await user.type(phoneInput, '123'); // Phone too short
 
       await waitFor(() => {
         const submitButton = screen.getByTestId('submit-button');
@@ -148,7 +148,7 @@ describe('UserForm', () => {
 
         const phoneError = screen.queryByTestId('telefonos-error-0');
         if (phoneError) {
-          expect(phoneError).toHaveTextContent('Teléfono 1 inválido');
+          expect(phoneError).toHaveTextContent('Phone 1 invalid');
         }
       });
     });
@@ -159,12 +159,12 @@ describe('UserForm', () => {
 
       const addressInput = screen.getByTestId('direcciones-input-0');
 
-    // Borrar valor por defecto o cambiarlo a inválido
+      // Clear the default value or change it to invalid
       await user.clear(addressInput);
-      await user.type(addressInput, '123'); // menos de 5 caracteres
+      await user.type(addressInput, '123'); // less than 5 characters
 
       await waitFor(() => {
-        expect(screen.getByTestId('direcciones-error-0')).toHaveTextContent('Dirección 1 inválida');
+        expect(screen.getByTestId('direcciones-error-0')).toHaveTextContent('Address 1 invalid');
         const submitButton = screen.getByTestId('submit-button');
         expect(submitButton).toBeDisabled();
       });
@@ -177,7 +177,7 @@ describe('UserForm', () => {
       const submitButton = screen.getByTestId('submit-button');
       expect(submitButton).toBeDisabled();
 
-      // Llenar campos uno por uno y verificar que sigue deshabilitado hasta el final
+      // Fill fields one by one and verify button stays disabled until the last one
       await user.type(screen.getByTestId('rut-input'), '12345678-5');
       expect(submitButton).toBeDisabled();
 
@@ -193,7 +193,7 @@ describe('UserForm', () => {
       await user.type(screen.getByTestId('telefonos-input-0'), '+56912345678');
       expect(submitButton).toBeDisabled();
 
-      // Solo después de llenar el último campo requerido debería habilitarse
+      // Only after filling the last required field should it become enabled
       await user.type(screen.getByTestId('direcciones-input-0'), 'Test Address');
 
       await waitFor(() => {
@@ -209,21 +209,21 @@ describe('UserForm', () => {
 
       const childrenInput = screen.getByTestId('cantidadHijos-input') as HTMLInputElement;
 
-      // Verificar atributos del input
+      // Verify input attributes
       expect(childrenInput).toHaveAttribute('min', '0');
       expect(childrenInput).toHaveAttribute('type', 'number');
 
-      // Llenar otros campos para aislar la validación de hijos
+      // Fill other fields to isolate children validation
       await fillCompleteForm(user);
 
-      // Verificar que el valor por defecto (0) permite envío
+      // Verify that the default value (0) allows submission
       await waitFor(() => {
         expect(childrenInput.value).toBe('0');
         const submitButton = screen.getByTestId('submit-button');
         expect(submitButton).not.toBeDisabled();
       });
 
-      // Verificar que números positivos funcionan
+      // Verify that positive numbers work
       await user.clear(childrenInput);
       await user.type(childrenInput, '3');
 
@@ -233,7 +233,7 @@ describe('UserForm', () => {
         expect(submitButton).not.toBeDisabled();
       });
 
-      // Probar valores negativos
+      // Test negative values
       await user.clear(childrenInput);
       await user.type(childrenInput, '-5');
 
@@ -249,14 +249,14 @@ describe('UserForm', () => {
       const user = userEvent.setup();
       render(<UserForm {...defaultProps} />);
 
-      // Añadir teléfono
+      // Add phone
       const addPhoneButton = screen.getByTestId('telefonos-add');
       await user.click(addPhoneButton);
 
       let phoneInputs = screen.getAllByTestId(/^telefonos-input-\d+$/);
       expect(phoneInputs).toHaveLength(2);
 
-      // Eliminar el segundo teléfono
+      // Remove second phone
       const removeButton = screen.getByTestId('telefonos-remove-1');
       await user.click(removeButton);
 
@@ -268,14 +268,14 @@ describe('UserForm', () => {
       const user = userEvent.setup();
       render(<UserForm {...defaultProps} />);
 
-      // Añadir dirección
+      // Add address
       const addAddressButton = screen.getByTestId('direcciones-add');
       await user.click(addAddressButton);
 
       let addressInputs = screen.getAllByTestId(/^direcciones-input-\d+$/);
       expect(addressInputs).toHaveLength(2);
 
-      // Eliminar la segunda dirección
+      // Remove second address
       const removeButton = screen.getByTestId('direcciones-remove-1');
       await user.click(removeButton);
 
@@ -284,10 +284,10 @@ describe('UserForm', () => {
     });
 
     test('shows general error for address field', () => {
-      const errors = [{ field: 'direcciones', message: 'Debe ingresar al menos una dirección' }];
+      const errors = [{ field: 'direcciones', message: 'At least one address is required' }];
       render(
         <ArrayField
-          label="Direcciones"
+          label="Addresses"
           fieldName="direcciones"
           values={['']}
           onChange={() => {}}
@@ -298,7 +298,7 @@ describe('UserForm', () => {
       );
 
       expect(screen.getByTestId('direcciones-error')).toHaveTextContent(
-        'Debe ingresar al menos una dirección'
+        'At least one address is required'
       );
     });
   });
@@ -318,7 +318,7 @@ describe('UserForm', () => {
       const submitButton = screen.getByTestId('submit-button');
       await user.click(submitButton);
 
-    // Verificar que se llamó con el formato correcto (con puntos)
+      // Verify it was called with the correct format (with dots)
       expect(mockOnSubmit).toHaveBeenCalledWith({
         rut: '12.345.678-5',
         nombre: 'Test User',
@@ -347,7 +347,7 @@ describe('UserForm', () => {
 
       render(<UserForm {...defaultProps} user={existingUser} />);
 
-      // Modificar algunos campos
+      // Modify some fields
       const nombreInput = screen.getByTestId('nombre-input');
       await user.clear(nombreInput);
       await user.type(nombreInput, 'Juan Pérez Actualizado');
@@ -360,9 +360,9 @@ describe('UserForm', () => {
       const submitButton = screen.getByTestId('submit-button');
       await user.click(submitButton);
 
-      // Verificar que el RUT NO esté incluido en modo edición (línea 17)
+      // Verify that RUT is NOT included in edit mode
       expect(mockOnSubmit).toHaveBeenCalledWith({
-        // RUT no debe estar presente en modo edición
+        // RUT should not be present in edit mode
         nombre: 'Juan Pérez Actualizado',
         fechaNacimiento: '1990-01-01',
         cantidadHijos: 2,
@@ -371,7 +371,7 @@ describe('UserForm', () => {
         direcciones: ['Av. Ejemplo 123'],
       });
 
-      // Verificar explícitamente que no se envió el RUT
+      // Explicitly verify RUT was not sent
       const callArgs = mockOnSubmit.mock.calls[0][0];
       expect(callArgs).not.toHaveProperty('rut');
     });
@@ -380,13 +380,13 @@ describe('UserForm', () => {
       const user = userEvent.setup();
       render(<UserForm {...defaultProps} />);
 
-      // Llenar campos básicos
+      // Fill basic fields
       await user.type(screen.getByTestId('rut-input'), '12345678-5');
       await user.type(screen.getByTestId('nombre-input'), 'Test User');
       await user.type(screen.getByTestId('fechaNacimiento-input'), '1990-01-02');
       await user.type(screen.getByTestId('correoElectronico-input'), 'test@example.com');
 
-      // Añadir múltiples teléfonos y direcciones
+      // Add multiple phones and addresses
       await user.type(screen.getByTestId('telefonos-input-0'), '+56912345678');
       await user.click(screen.getByTestId('telefonos-add'));
       await user.type(screen.getByTestId('telefonos-input-1'), '+56987654321');
@@ -435,14 +435,14 @@ describe('UserForm', () => {
       const rutInput = screen.getByTestId('rut-input');
       const nombreInput = screen.getByTestId('nombre-input') as HTMLInputElement;
 
-      expect(submitButton).toHaveTextContent('Guardando...');
+      expect(submitButton).toHaveTextContent('Saving...');
       expect(cancelButton).toBeDisabled();
       expect(rutInput).toBeDisabled();
       expect(nombreInput).toBeDisabled();
 
-      // Intentar cambiar valor
-      await user.type(nombreInput, 'Nuevo Nombre');
-      expect(nombreInput.value).not.toBe('Nuevo Nombre');
+      // Try to change value
+      await user.type(nombreInput, 'New Name');
+      expect(nombreInput.value).not.toBe('New Name');
     });
   });
 });

@@ -12,7 +12,7 @@ interface UserListProps {
 export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: UserListProps) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-CL', {
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -34,17 +34,17 @@ export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: Use
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Lista de Usuarios</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">User List</h2>
         <p className="text-gray-600">
-          <span className="font-semibold text-blue-600">{totalUsers}</span> usuarios registrados en
+          <span className="font-semibold text-blue-600">{totalUsers}</span> registered users in
           total
         </p>
       </div>
 
       {users.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-500 text-lg">No hay usuarios registrados</p>
-          <p className="text-gray-400">Agrega el primer usuario para comenzar</p>
+          <p className="text-gray-500 text-lg">No registered users</p>
+          <p className="text-gray-400">Add the first user to get started</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -63,7 +63,7 @@ export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: Use
                 {isUserBirthday && (
                   <div className="mb-3 p-2 bg-yellow-200 border border-yellow-400 rounded-md">
                     <p className="text-yellow-800 font-medium flex items-center">
-                      🎉 ¡Hoy es el cumpleaños de {user.nombre.split(' ')[0]}!
+                      🎉 Today is {user.nombre.split(' ')[0]}'s birthday!
                     </p>
                   </div>
                 )}
@@ -71,7 +71,7 @@ export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: Use
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <div>
-                      <span className="font-semibold text-gray-700">Nombre:</span>
+                      <span className="font-semibold text-gray-700">Name:</span>
                       <span className="ml-2 text-gray-900">{user.nombre}</span>
                     </div>
 
@@ -81,14 +81,14 @@ export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: Use
                     </div>
 
                     <div>
-                      <span className="font-semibold text-gray-700">Fecha de Nacimiento:</span>
+                      <span className="font-semibold text-gray-700">Date of Birth:</span>
                       <span className="ml-2 text-gray-900">
-                        {formatDate(user.fechaNacimiento)} ({userAge} años)
+                        {formatDate(user.fechaNacimiento)} ({userAge} years)
                       </span>
                     </div>
 
                     <div>
-                      <span className="font-semibold text-gray-700">Hijos:</span>
+                      <span className="font-semibold text-gray-700">Children:</span>
                       <span className="ml-2 text-gray-900">{user.cantidadHijos}</span>
                     </div>
                   </div>
@@ -100,7 +100,7 @@ export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: Use
                     </div>
 
                     <div>
-                      <span className="font-semibold text-gray-700">Teléfonos:</span>
+                      <span className="font-semibold text-gray-700">Phones:</span>
                       <div className="ml-2">
                         {user.telefonos.map((telefono, index) => (
                           <div key={index} className="text-gray-900 font-mono">
@@ -111,7 +111,7 @@ export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: Use
                     </div>
 
                     <div>
-                      <span className="font-semibold text-gray-700">Direcciones:</span>
+                      <span className="font-semibold text-gray-700">Addresses:</span>
                       <div className="ml-2">
                         {user.direcciones.map((direccion, index) => (
                           <div key={index} className="text-gray-900">
@@ -129,7 +129,7 @@ export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: Use
                     className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
                     disabled={isLoading}
                   >
-                    Editar
+                    Edit
                   </button>
 
                   <button
@@ -142,11 +142,11 @@ export const UserList = ({ users, totalUsers, onEdit, onDelete, isLoading }: Use
                     }`}
                     title={
                       !canDelete(user)
-                        ? 'No se puede eliminar: usuario de cumpleaños'
-                        : 'Eliminar usuario'
+                        ? 'Cannot delete: user has birthday today'
+                        : 'Delete user'
                     }
                   >
-                    {!canDelete(user) ? '🎂 No eliminar' : 'Eliminar'}
+                    {!canDelete(user) ? '🎂 Cannot delete' : 'Delete'}
                   </button>
                 </div>
               </div>

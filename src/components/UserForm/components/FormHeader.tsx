@@ -6,6 +6,6 @@ interface FormHeaderProps {
 
 export const FormHeader: React.FC<FormHeaderProps> = ({ isEditMode }) => (
   <h2 className="text-2xl font-bold mb-6 text-gray-800">
-    {isEditMode ? 'Editar Usuario' : 'Agregar Nuevo Usuario'}
+    {isEditMode ? 'Edit User' : 'Add New User'}
   </h2>
 );
