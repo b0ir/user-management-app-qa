@@ -92,7 +92,7 @@ const AppContent: React.FC = () => {
           errorMessage.toLowerCase().includes('duplicado') ||
           errorMessage.toLowerCase().includes('registrado'))
       ) {
-        showMessage('error', 'El RUT ya está registrado');
+        showMessage('error', 'RUT is already registered');
       } else {
         showMessage('error', 'Unexpected error creating user');
       }
@@ -108,7 +108,7 @@ const AppContent: React.FC = () => {
     try {
       const response = await UserService.updateUser(selectedUser.id, userData);
       if (response.success) {
-        showMessage('success', 'Usuario actualizado exitosamente');
+        showMessage('success', 'User updated successfully');
         await loadUsers();
         setCurrentView('list');
         setSelectedUser(null);
@@ -140,7 +140,7 @@ const AppContent: React.FC = () => {
     try {
       const response = await UserService.deleteUser(showDeleteConfirm.id);
       if (response.success) {
-        showMessage('success', 'Usuario eliminado exitosamente');
+        showMessage('success', 'User deleted successfully');
         await loadUsers();
         await loadUsersCount();
       } else {
