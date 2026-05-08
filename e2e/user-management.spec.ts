@@ -114,23 +114,23 @@ test.describe('User Management Application', () => {
       await expect(page.getByRole('button', { name: 'Create User' })).toBeDisabled();
 
       // Verify that validation errors appear
-      await expect(page.getByText('RUT inválido')).toBeVisible();
-      await expect(page.getByText('Nombre es requerido')).toBeVisible();
-      await expect(page.getByText('Fecha de nacimiento es requerida')).toBeVisible();
+      await expect(page.getByText('Invalid RUT')).toBeVisible();
+      await expect(page.getByText('Name is required')).toBeVisible();
+      await expect(page.getByText('Date of birth is required')).toBeVisible();
     });
 
     test('should validate RUT format', async ({ page }) => {
       await page.getByLabel('RUT *').fill('invalid-rut');
       await page.getByLabel('Name *').click(); // Trigger validation
 
-      await expect(page.getByText('RUT inválido')).toBeVisible();
+      await expect(page.getByText('Invalid RUT')).toBeVisible();
     });
 
     test('should validate email format', async ({ page }) => {
       await page.getByLabel('Email *').fill('invalid-email');
       await page.getByLabel('Name *').click(); // Trigger validation
 
-      await expect(page.getByText('Email inválido')).toBeVisible();
+      await expect(page.getByText('Invalid email')).toBeVisible();
     });
 
     test('should allow adding multiple phone numbers and addresses', async ({ page }) => {
@@ -196,7 +196,7 @@ test.describe('User Management Application', () => {
       await page.getByRole('button', { name: 'Create User' }).click();
 
       // Should now show the duplicate RUT error
-      await expect(page.getByText('El RUT ya está registrado')).toBeVisible();
+      await expect(page.getByText('RUT is already registered')).toBeVisible();
     });
   });
 
@@ -245,7 +245,7 @@ test.describe('User Management Application', () => {
       await page.getByRole('button', { name: 'Update User' }).click();
 
       // Wait for success message and redirect
-      await expect(page.getByText('Usuario actualizado exitosamente')).toBeVisible();
+      await expect(page.getByText('User updated successfully')).toBeVisible();
       await expect(page.getByRole('heading', { name: 'User List' })).toBeVisible();
 
       // Verify that the updated name appears in the list
@@ -263,7 +263,7 @@ test.describe('User Management Application', () => {
       await page.getByLabel('Email *').click();
 
       // Verify that the error appears
-      await expect(page.getByText('Nombre es requerido')).toBeVisible();
+      await expect(page.getByText('Name is required')).toBeVisible();
 
       // Button should be disabled
       await expect(page.getByRole('button', { name: 'Update User' })).toBeDisabled();
@@ -312,9 +312,9 @@ test.describe('User Management Application', () => {
 
         // Look for confirmation modal or message
         const confirmDialog =
-          page.getByText(/¿Está seguro que desea eliminar/i) ||
-          page.getByRole('button', { name: /confirmar/i }) ||
-          page.getByText(/eliminar usuario/i);
+          page.getByText(/Are you sure you want to delete/i) ||
+          page.getByRole('button', { name: /Confirm/i }) ||
+          page.getByText(/Confirm Deletion/i);
 
         if (await confirmDialog.first().isVisible()) {
           await expect(confirmDialog.first()).toBeVisible();
@@ -355,13 +355,13 @@ test.describe('User Management Application', () => {
         await deleteButton.click();
 
         // Look for and click confirmation if it exists
-        const confirmButton = page.getByRole('button', { name: /confirmar/i }).first();
+        const confirmButton = page.getByRole('button', { name: /Confirm/i }).first();
         if (await confirmButton.isVisible()) {
           await confirmButton.click();
         }
 
         // Verify success message
-        await expect(page.getByText('Usuario eliminado exitosamente')).toBeVisible();
+        await expect(page.getByText('User deleted successfully')).toBeVisible();
 
         // Verify there is one fewer user
         await expect(page.locator('[data-testid="user-card"]')).toHaveCount(initialUserCount - 1);
