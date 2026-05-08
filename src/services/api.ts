@@ -67,7 +67,7 @@ export class UserService {
       if (!user) {
         return {
           success: false,
-          message: 'Usuario no encontrado',
+          message: 'User not found',
         };
       }
 
@@ -78,7 +78,7 @@ export class UserService {
     } catch (error) {
       return {
         success: false,
-        message: 'Error al obtener usuario',
+        message: 'Error fetching user',
       };
     }
   }
@@ -96,7 +96,7 @@ export class UserService {
       if (existingUser) {
         return {
           success: false,
-          message: 'El RUT ya está registrado',
+          message: 'RUT is already registered',
         };
       }
 
@@ -116,7 +116,7 @@ export class UserService {
     } catch (error) {
       return {
         success: false,
-        message: 'Error al crear usuario',
+        message: 'Error creating user',
       };
     }
   }
@@ -129,7 +129,7 @@ export class UserService {
       if (userIndex === -1) {
         return {
           success: false,
-          message: 'Usuario no encontrado',
+          message: 'User not found',
         };
       }
 
@@ -167,7 +167,7 @@ export class UserService {
     } catch (error) {
       return {
         success: false,
-        message: 'Error al actualizar usuario',
+        message: 'Error updating user',
       };
     }
   }
@@ -180,7 +180,7 @@ export class UserService {
       if (userIndex === -1) {
         return {
           success: false,
-          message: 'Usuario no encontrado',
+          message: 'User not found',
         };
       }
 
@@ -190,7 +190,7 @@ export class UserService {
       if (isBirthday(user.fechaNacimiento)) {
         return {
           success: false,
-          message: 'No se puede eliminar un usuario que está de cumpleaños hoy',
+          message: 'Cannot delete a user who has a birthday today',
         };
       }
 
@@ -202,7 +202,7 @@ export class UserService {
     } catch (error) {
       return {
         success: false,
-        message: 'Error al eliminar usuario',
+        message: 'Error deleting user',
       };
     }
   }
@@ -218,7 +218,7 @@ export class UserService {
     } catch (error) {
       return {
         success: false,
-        message: 'Error al obtener conteo de usuarios',
+        message: 'Error fetching users count',
       };
     }
   }
