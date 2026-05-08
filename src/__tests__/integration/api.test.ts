@@ -87,7 +87,7 @@ describe('UserService', () => {
       const response = await UserService.createUser(duplicateUser);
 
       expect(response.success).toBe(false);
-      expect(response.message).toContain('RUT ya está registrado');
+      expect(response.message).toContain('RUT is already registered');
     });
   });
 
@@ -140,7 +140,7 @@ describe('UserService', () => {
       const response = await UserService.updateUser('999', updateData);
 
       expect(response.success).toBe(false);
-      expect(response.message).toContain('Usuario no encontrado');
+      expect(response.message).toContain('User not found');
     });
 
     test('should allow partial updates', async () => {
@@ -172,7 +172,7 @@ describe('UserService', () => {
       const response = await UserService.deleteUser('999');
 
       expect(response.success).toBe(false);
-      expect(response.message).toContain('Usuario no encontrado');
+      expect(response.message).toContain('User not found');
     });
 
     test('should reject deletion for user with birthday today', async () => {
@@ -190,7 +190,7 @@ describe('UserService', () => {
       const response = await UserService.deleteUser(birthdayUser.id);
 
       expect(response.success).toBe(false);
-      expect(response.message).toContain('cumpleaños hoy');
+      expect(response.message).toContain('birthday today');
     });
   });
 
@@ -219,7 +219,7 @@ describe('UserService', () => {
       const response = await UserService.getUserById('999');
 
       expect(response.success).toBe(false);
-      expect(response.message).toContain('Usuario no encontrado');
+      expect(response.message).toContain('User not found');
     });
   });
   describe('Error handling', () => {
@@ -251,7 +251,7 @@ describe('UserService', () => {
 
       const response = await UserService.getUserById('1');
       expect(response.success).toBe(false);
-      expect(response.message).toBe('Error al obtener usuario');
+      expect(response.message).toBe('Error fetching user');
     });
 
     test('should handle error in createUser', async () => {
@@ -273,7 +273,7 @@ describe('UserService', () => {
 
       const response = await UserService.createUser(createUserData);
       expect(response.success).toBe(false);
-      expect(response.message).toBe('Error al crear usuario');
+      expect(response.message).toBe('Error creating user');
     });
 
     test('should handle error in updateUser', async () => {
@@ -309,7 +309,7 @@ describe('UserService', () => {
 
       const response = await UserService.updateUser('1', updateData);
       expect(response.success).toBe(false);
-      expect(response.message).toBe('Error al actualizar usuario');
+      expect(response.message).toBe('Error updating user');
     });
 
     test('should handle error in deleteUser', async () => {
@@ -336,7 +336,7 @@ describe('UserService', () => {
 
       const response = await UserService.deleteUser('1');
       expect(response.success).toBe(false);
-      expect(response.message).toBe('Error al eliminar usuario');
+      expect(response.message).toBe('Error deleting user');
     });
 
     test('should handle error in getUsersCount', async () => {
