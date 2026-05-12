@@ -217,6 +217,8 @@ const AppContent: React.FC = () => {
       {message && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <div
+            role="alert"
+            aria-live="assertive"
             className={`p-4 rounded-md ${message.type === 'success'
                 ? 'bg-green-100 border border-green-400 text-green-700'
                 : 'bg-red-100 border border-red-400 text-red-700'
@@ -227,6 +229,7 @@ const AppContent: React.FC = () => {
               <button
                 onClick={() => setMessage(null)}
                 className="text-lg font-bold hover:opacity-70"
+                aria-label="Dismiss message"
               >
                 ×
               </button>
@@ -236,26 +239,31 @@ const AppContent: React.FC = () => {
       )}
 
       {/* Navigation Breadcrumb */}
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-        <div className="flex items-center space-x-2 text-gray-500">
-          <button
-            onClick={() => {
-              setSelectedUser(null);
-              setCurrentView('list');
-            }}
-            className={`hover:text-blue-600 ${currentView === 'list' ? 'text-blue-600 font-medium' : ''}`}
-          >
-            User List
-          </button>
+      <nav aria-label="Breadcrumb" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        <ol className="flex items-center space-x-2 text-gray-500 list-none p-0 m-0">
+          <li>
+            <button
+              onClick={() => {
+                setSelectedUser(null);
+                setCurrentView('list');
+              }}
+              aria-current={currentView === 'list' ? 'page' : undefined}
+              className={`hover:text-blue-600 ${currentView === 'list' ? 'text-blue-600 font-medium' : ''}`}
+            >
+              User List
+            </button>
+          </li>
           {currentView !== 'list' && (
             <>
-              <span>/</span>
-              <span className="text-blue-600 font-medium">
-                {currentView === 'create' ? 'Add User' : 'Edit User'}
-              </span>
+              <li aria-hidden="true"><span>/</span></li>
+              <li>
+                <span aria-current="page" className="text-blue-600 font-medium">
+                  {currentView === 'create' ? 'Add User' : 'Edit User'}
+                </span>
+              </li>
             </>
           )}
-        </div>
+        </ol>
       </nav>
 
       {/* Main Content */}
@@ -282,9 +290,17 @@ const AppContent: React.FC = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">Confirm Deletion</h3>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          aria-hidden="true"
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-dialog-title"
+            className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4"
+          >
+            <h3 id="delete-dialog-title" className="text-lg font-semibold mb-4">Confirm Deletion</h3>
             <p className="text-gray-600 mb-6">
               Are you sure you want to delete <strong>{showDeleteConfirm.nombre}</strong>?
             </p>
