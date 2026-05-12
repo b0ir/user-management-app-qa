@@ -97,18 +97,3 @@ e2e/                        # Playwright E2E tests
 | E2E | Full CRUD, authentication, validation, edge cases |
 | Browsers | Chrome, Firefox, Safari, Mobile Chrome, Mobile Safari |
 
-## Contributing
-
-1. Fork the repo
-2. Create a branch: `git checkout -b fix/your-fix`
-3. Make changes and ensure all checks pass:
-   ```bash
-   npm run lint && npm run type-check && npm run test:coverage
-   ```
-4. Open a pull request targeting `main`
-
-PRs must pass CI (lint, type-check, tests, build) before merging.
-
-## License
-
-MIT
