@@ -6,7 +6,6 @@
 
 A CRUD user management app built with React and TypeScript, focused on comprehensive testing — unit, integration, and E2E with >90% coverage.
 
-![User List](docs/images/screenshot-lista-usuarios.png)
 
 ## Live Demo
 
