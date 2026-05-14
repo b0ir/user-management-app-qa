@@ -1,10 +1,12 @@
 export const VALIDATION_MESSAGES = {
   RUT_INVALID: 'Invalid RUT',
   NAME_REQUIRED: 'Name is required',
+  NAME_TOO_LONG: 'Name must be 150 characters or fewer',
   BIRTH_DATE_REQUIRED: 'Date of birth is required',
   BIRTH_DATE_FUTURE: 'Date of birth cannot be in the future',
   BIRTH_DATE_INVALID: 'Invalid date of birth',
   CHILDREN_NEGATIVE: 'Number of children cannot be negative',
+  CHILDREN_TOO_MANY: 'Number of children cannot exceed 50',
   EMAIL_INVALID: 'Invalid email',
   PHONE_REQUIRED: 'At least one phone number is required',
   PHONE_INVALID: 'Invalid phone number',

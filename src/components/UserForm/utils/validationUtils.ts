@@ -12,8 +12,11 @@ export const validateRutField = (formData: any, isEditMode: boolean): Validation
 
 export const validateNameField = (formData: any): ValidationError[] => {
   const errors: ValidationError[] = [];
-  if (!formData.nombre.trim()) {
+  const trimmed = formData.nombre.trim();
+  if (!trimmed) {
     errors.push({ field: 'nombre', message: VALIDATION_MESSAGES.NAME_REQUIRED });
+  } else if (trimmed.length > 150) {
+    errors.push({ field: 'nombre', message: VALIDATION_MESSAGES.NAME_TOO_LONG });
   }
   return errors;
 };
@@ -51,6 +54,11 @@ export const validateChildrenField = (formData: any): ValidationError[] => {
     errors.push({
       field: 'cantidadHijos',
       message: VALIDATION_MESSAGES.CHILDREN_NEGATIVE,
+    });
+  } else if (formData.cantidadHijos > 50) {
+    errors.push({
+      field: 'cantidadHijos',
+      message: VALIDATION_MESSAGES.CHILDREN_TOO_MANY,
     });
   }
   return errors;
@@ -95,6 +103,7 @@ export const validateAddressesField = (formData: any): ValidationError[] => {
 
       if (
         trimmedAddress.length < 5 ||
+        trimmedAddress.length > 300 ||
         /^\d+$/.test(trimmedAddress) ||
         !/[a-zA-Z]/.test(trimmedAddress)
       ) {
